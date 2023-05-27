@@ -1,0 +1,9 @@
+-La prima scelta progettuale è stata la divisione in app del progetto. In particolare
+ho deciso di dividerla in 3 app diverse per separare le varie funzionalità relative
+a diversi utenti nell'ottica che in un sito reale, tenere tutto in una singola app
+avrebbe reso lo sviluppo disordinato e difficile al crescere delle richieste per nuove
+funzionalità. Inoltre in questo modo è più facile testare e debuggare eventuali errori.
+Infine in caso di erroi introdotti in un'app, le altre app possono continuare a 
+funzionare. è una scelta che facilita anche me nello sviluppo perché mi permette uno
+sviluppo incrementale chiaramente scandito (nel senso prima faccio le funzionalità per
+i medici, poi le prenotazioni degli esami per gli utenti, ecc.).
