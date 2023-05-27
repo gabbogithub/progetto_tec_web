@@ -7,3 +7,5 @@ Infine in caso di erroi introdotti in un'app, le altre app possono continuare a
 funzionare. è una scelta che facilita anche me nello sviluppo perché mi permette uno
 sviluppo incrementale chiaramente scandito (nel senso prima faccio le funzionalità per
 i medici, poi le prenotazioni degli esami per gli utenti, ecc.).
+
+-Creazione di un utente custom
