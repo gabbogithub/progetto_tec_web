@@ -1,7 +1,17 @@
 from django.db import models
 from django.conf import settings
 from datetime import datetime
+from utenti_custom.models import UtenteCustom
 
+class Medico(models.Model):
+    utente = models.OneToOneField(UtenteCustom, on_delete=models.CASCADE)
+    descrizione = models.TextField()
+
+    class Meta:
+        '''Placeholder'''
+
+        verbose_name_plural = "Medici"
+        
 class Esame(models.Model):
     '''Classe che rappresenta il modello per gli esami medici'''
 
@@ -34,10 +44,10 @@ class Esame(models.Model):
     ]
 
     tipologia = models.CharField(max_length=30, choices=TIPOLOGIE_POSSIBILI)
-    medico = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="esami_caricati", on_delete=models.PROTECT)
-    data = models.DateTimeField(format="%Y-%m-%d %H:%M")
+    medico = models.ForeignKey(Medico, related_name="esami_caricati", on_delete=models.PROTECT)
+    data = models.DateTimeField()
     stato = models.CharField(max_length=20, choices=STATI_POSSIBILI, default="disponibile")
-    utente = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="esami_prenotati", null=True, blank=True, 
+    utente = models.ForeignKey(UtenteCustom, related_name="esami_prenotati", null=True, blank=True, 
                                on_delete=models.SET_NULL)
     
     def __str__(self):
@@ -51,3 +61,4 @@ class Esame(models.Model):
         '''Classe che ha lo scopo di specificare il nome plurale per il modello "Esame"'''
 
         verbose_name_plural = "Esami"
+        ordering = ["data"]
