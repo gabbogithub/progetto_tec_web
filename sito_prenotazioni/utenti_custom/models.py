@@ -36,11 +36,15 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 class UtenteCustom(AbstractUser):
+    """"Classe che definisce un utente personalizzato senza il campo username"""
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    foto_profilo = models.ImageField(upload_to ="immagini_utenti/% Y/% m/% d/")
+    foto_profilo = models.ImageField(upload_to ='immagini_utenti/%Y/%m/%d/', blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name',]
 
     objects = UserManager()
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"

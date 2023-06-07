@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %} Lista degli esami{% endblock %} 
+
+{% block content %} 
+<br>
+<center>
+<h2> {{ view.titolo }} {{ object_list.count }} esami </h2>
+</center>
+<br>
+
+
+{% for e in object_list %}
+<br>
+<div class="d-flex aligns-items-center justify-content-center card text-center w-50 mx-auto">
+<div class="card text-center">
+  <div class="card-header">
+    Esame disponibile per la prenotazione
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Esame della tipologia {{ e.tipologia }}</h5>
+    <p class="card-text">Un esame di {{ e.get_nome_medico }} {{e.get_cognome_medico}} 
+      che verrà eseguito in data {{e.data}}</p> 
+
+  </div>
+  <div class="card-footer">
+    <a href="#" class="btn btn-info">Prenotalo</a>
+  </div>
+</div>
+</div>
+<br>
+{%endfor%}
+</div>
+<br>
+
+{% include "paginatore.html" %}
+
+{% endblock %}

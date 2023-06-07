@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %} Situazione visite create {% endblock %} 
+
+{% block content %} 
+
+<br>
+<center>
+<h2> Stato attuale dei tuoi esami caricati</h2>
+</center>
+
+<br>
+<div class="d-flex justify-content-center">
+{% for e in page_obj  %}
+<br>
+<div class="d-flex aligns-items-center justify-content-center card text-center w-50 mx-auto">
+<div class="card text-center">
+  <div class="card-header">
+     Esame della tipologia {{ e.tipologia }}
+  </div>
+  <div class="card-body">
+    {% if e.stato == 'prenotato' or e.stato == 'disponibile' %}
+        <p class="card-text"> Esame che verrà eseguito in data {{e.data}}</p>
+    {% elif e.stato == 'eseguito' %}
+        <p class="card-text"> Esame eseguito in data {{e.data}}</p>
+    {% elif e.stato == 'cancellato' %}
+      <p class="card-text"> Esame che doveva essere eseguito in data {{e.data}}</p>
+    {% endif%}
+
+    {% if e.paziente is not None %}
+      <p class="card-text"> ed e' stato prenotato da {{e.paziente}}</p>
+    {% elif e.stato != 'cancellato' %}
+      <p class="card-text"> e non e' ancora stato prenotato</p>
+    {% endif %}
+  </div>
+    <div class="card-footer">
+      <a href="{% url 'gestione_medici:modifica_esame' e.pk %}" 
+      class="btn btn-warning" style="">Modifica</a>
+  </div>
+</div>
+</div>
+</div>
+<br>
+{%endfor%}
+
+{% include "paginatore.html" %}
+
+{% endblock %}

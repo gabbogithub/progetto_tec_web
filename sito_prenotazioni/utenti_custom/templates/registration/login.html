@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %} 
+
+{% block title %} Login {% endblock %} 
+
+{% block content %} 
+
+{% if "notok" in request.GET.auth %}
+<div class="alert alert-danger" role="alert">
+  Si è arrivati qui in quanto non si dispone dei permessi necessari per il servizio scelto!
+</div>
+{% endif %}
+
+<div class="jumbotron text-center" style="margin-bottom:0">
+    <h1>Pagina di Login</h1>
+    <p>Si prega di compilare i campi necessari</p> 
+</div>
+
+<center>
+<div class="content-section col-md-8 col-md-offset-2">
+<form method="post" style="border: 1px solid black; margin: 4%; padding:10%; border-radius:1%;"> {% csrf_token %}
+
+    {{form | crispy}}
+    <br><br>
+    <center>
+    <input type="submit" class="btn btn-success" value="Esegui login">
+    </center>
+
+  </form>
+</center>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+<br>
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href="?page=1">&laquo; prima</a></li>
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">precedente</a></li>
+        {% else %}
+          <li class="page-item disabled"><a class="page-link" href="#">precedente</a></li>
+        {% endif %}
+
+        <li class="page-item active " aria-current="page">
+          <a class="page-link" href="#">Pagina {{ page_obj.number }} di {{ page_obj.paginator.num_pages }}</a>
+        </li>
+
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">prossima</a></li>
+        {% else %}
+          <li class="page-item"><a class="page-link disabled" href="#">prossima</a></li>
+        {% endif %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">ultima &raquo;</a></li>
+  </ul>
+</nav>

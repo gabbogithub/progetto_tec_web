@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     {% block head %} 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+  <!--link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+  <script>var exports = {};</script>
   <script src="{% static '/jquery-3.7.0.min.js' %}"></script>
   <script src="{% static '/popper.min.js' %}"></script>
-  <script src="{% static '/js/bootstrap.min.js' %}"></script>
+  <script-- src="{% static '/js/bootstrap.min.js' %}"></script-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="shortcut icon" type="image/png" href="{% static 'immagini/favicon.svg' %}" >
   {% endblock %}
   {% load crispy_forms_tags %} 
 
@@ -17,7 +24,92 @@
 <title>{% block title %} {% endblock %}</title> 
 
 <body>
+
+  <nav class="navbar navbar-expand-sm bg-light navbar-light">
+    <div class="container-fluid">
+      {% block navbar %}
+      <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'gestione_medici:ricerca_esami' %}">Cerca esame</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'gestione_utenti:situazione' %}">Esami prenotati</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="#">Assistenza clienti</a>
+          </li>
+
+        </ul>
+
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+          <ul class="navbar-nav ms-auto">
+            {% if not request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'utenti_custom:registrazione' %}">Registrati</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+              <!-- User profile image -->
+              <span class="navbar-text">
+                {% if request.user.is_authenticated and request.user.foto_profilo %}
+                  <img src="{{ request.user.foto_profilo.url }}" alt="User profile" class="rounded-circle mt-1 me-2" style="width: 32px; height: 32px;">
+                {% else %}
+                  <img src="{% static '/immagini/blank_profile_picture.png' %}" alt="Default Image" class="rounded-circle mt-1 me-2" style="width: 32px; height: 32px;">
+                {% endif %}
+              </span>
+            </li>
+            
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if request.user.is_authenticated %}
+                  {{ request.user }}
+                {% else %}
+                  Utente anonimo
+                {% endif %}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                {% if request.user.is_authenticated %}
+                  <li><a class="dropdown-item" href="{% url 'utenti_custom:modifica_informazioni' %}">Modifica profilo</a></li>
+                  <li><a class="dropdown-item" href="{% url 'utenti_custom:logout' %}">Logout</a></li>
+                {% else %}
+                <li><a class="dropdown-item" href="{% url 'utenti_custom:login' %}">Login</a></li>
+                {% endif %}
+              </ul>
+          </ul>
+        </div>
+
+      </div> 
+      {% endblock %} 
+    </div>
+  </nav>
+
+{% if messages %}
+{% for message in messages %}
+      {% if message.tags == 'error' %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          {{ message }}
+      </div>
+      {% elif message.tags == 'success' %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          {{ message }}
+      </div>
+      {% endif %}
+  {% endfor %}
+  {% endif %}
+
 {% block content %}
 {% endblock %}
+
 </body>
 </html>

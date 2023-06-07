@@ -9,3 +9,13 @@ sviluppo incrementale chiaramente scandito (nel senso prima faccio le funzionali
 i medici, poi le prenotazioni degli esami per gli utenti, ecc.).
 
 -Creazione di un utente custom
+
+-sia filtraggio che ricerca di esame nella pagina admin sulla base della data perché
+il filtro lo utilizzi per una ricerca veloce mentre la barra di ricerca per una data
+specifica molto lontana nel tempo
+
+-assistenza clienti niente pagina personale ma modifica della pagina admin perché
+ho già implementato una modifica degli esami per i medici e avrei dovuto implementare
+qualcosa di molto simile, così invece ho imparato qualcosa di nuovo.
+
+-un medico non deve essere in grado di modificare l'utente che ha prenotato o no l'esame

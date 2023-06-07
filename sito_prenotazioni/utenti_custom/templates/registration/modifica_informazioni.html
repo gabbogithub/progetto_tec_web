@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %} {{view.title}}{% endblock %}
 {% load crispy_forms_tags %}
 
-{% block content%}
+{% block title %} Modifica informazioni {% endblock %} 
+
+
+{% block content %} 
 
 <div class="jumbotron text-center" style="margin-bottom:0">
-    <h1>{{view.title}}</h1>
+    <h1>Pagina di Modifica informazioni</h1>
+    <p>Compila i cambi che vuoi cambiare</p> 
 </div>
 
 <br>
@@ -20,5 +23,5 @@
 
 
 <br>
+
 {% endblock %}
-    

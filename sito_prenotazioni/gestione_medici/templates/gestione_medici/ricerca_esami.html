@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %} Cerca degli esami{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<center>
+<h1>Cerca degli esami</h1>
+</center>
+<br>
+<div class="d-flex justify-content-center">
+    {% crispy form %}
+</div>
+<br>
+{% endblock %}
