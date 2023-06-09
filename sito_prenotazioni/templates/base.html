@@ -26,7 +26,7 @@
 <body>
 
   <nav class="navbar navbar-expand-sm bg-light navbar-light">
-    <div class="container-fluid">
+    <div class="container-fluid ">
       {% block navbar %}
       <a class="navbar-brand" href="{% url 'home' %}">Home</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -43,6 +43,12 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'gestione_utenti:situazione' %}">Esami prenotati</a>
           </li>
+
+          {% if request.user.groups.all.0.name == 'medici' %} 
+          <li class="nav-item">
+            <a class="nav-link" href="#">Esami caricati</a>
+          </li>
+          {% endif%}
           
           <li class="nav-item">
             <a class="nav-link" href="#">Assistenza clienti</a>
@@ -61,9 +67,9 @@
               <!-- User profile image -->
               <span class="navbar-text">
                 {% if request.user.is_authenticated and request.user.foto_profilo %}
-                  <img src="{{ request.user.foto_profilo.url }}" alt="User profile" class="rounded-circle mt-1 me-2" style="width: 32px; height: 32px;">
+                  <img src="{{ request.user.foto_profilo.url }}" alt="Foto profilo" class="rounded-circle mt-1 me-2" style="width: 32px; height: 32px;">
                 {% else %}
-                  <img src="{% static '/immagini/blank_profile_picture.png' %}" alt="Default Image" class="rounded-circle mt-1 me-2" style="width: 32px; height: 32px;">
+                  <img src="{% static '/immagini/blank_profile_picture.png' %}" alt="Immagine default" class="rounded-circle mt-1 me-2" style="width: 32px; height: 32px;">
                 {% endif %}
               </span>
             </li>
@@ -80,6 +86,9 @@
                 {% if request.user.is_authenticated %}
                   <li><a class="dropdown-item" href="{% url 'utenti_custom:modifica_informazioni' %}">Modifica profilo</a></li>
                   <li><a class="dropdown-item" href="{% url 'utenti_custom:logout' %}">Logout</a></li>
+                  {% if request.user.groups.all.0.name == 'medici' %} 
+                    <li><a class="dropdown-item" href="#">Modifica descrizione</a></li>
+                    {% endif%}
                 {% else %}
                 <li><a class="dropdown-item" href="{% url 'utenti_custom:login' %}">Login</a></li>
                 {% endif %}

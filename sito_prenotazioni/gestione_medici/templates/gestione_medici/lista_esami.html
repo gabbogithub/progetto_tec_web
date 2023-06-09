@@ -19,8 +19,8 @@
   </div>
   <div class="card-body">
     <h5 class="card-title">Esame della tipologia {{ e.tipologia }}</h5>
-    <p class="card-text">Un esame di {{ e.get_nome_medico }} {{e.get_cognome_medico}} 
-      che verrà eseguito in data {{e.data}}</p> 
+    <p class="card-text">Un esame di <a href={% url 'gestione_medici:informazioni_medico' e.medico.pk %}>
+      {{ e.get_nome_medico }} {{e.get_cognome_medico}}</a> che verrà eseguito in data {{e.data}}</p> 
 
   </div>
   <div class="card-footer">

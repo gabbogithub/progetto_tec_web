@@ -118,3 +118,18 @@ class Esame(DirtyFieldsMixin, models.Model):
 
         verbose_name_plural = 'Esami'
         ordering = ['data']
+
+class Commento(models.Model):
+    medico = models.ForeignKey(Medico, related_name='commenti', on_delete=models.CASCADE)
+    commentatore = models.ForeignKey(UtenteCustom, related_name='commenti', on_delete=models.CASCADE)
+    testo = models.TextField(max_length=150)
+    data = models.DateField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Commenti'
+        ordering = ['data']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['medico', 'commentatore'], name='combinazione_medico_commentatore'
+            )
+        ]

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Medico, Esame
+from .models import Medico, Esame, Commento
 
 @admin.register(Medico)
 class MedicoAdmin(admin.ModelAdmin):
@@ -12,3 +12,5 @@ class EsameAdmin(admin.ModelAdmin):
     list_filter = ('stato', 'tipologia', 'data')
     search_fields = ('data', 'medico__utente__first_name', 'medico__utente__last_name',
                      'paziente__first_name', 'paziente__last_name')
+
+admin.site.register(Commento)

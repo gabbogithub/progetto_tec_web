@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} {{view.title}}{% endblock %} 
+
+{% block content %} 
+<br>
+<center>
+<h2> Pagina di {{object}} </h2>
+{% if object.utente.foto_profilo %}
+  <img src={{object.utente.foto_profilo.url}} alt="Immagine medico" class="object-fit-sm-contain" style="width: 200px; height: 200px;">
+{% else %}
+  <img src="{% static '/immagini/blank_profile_picture.png' %}" alt="Immagine default" class="object-fit-sm-contain" style="width: 200px; height: 200px;">
+{% endif%}
+</center>
+<br>
+
+
+
+<br>
+<center>
+  <div class="w-50 mx-auto" style="overflow-wrap: break-word;">
+    <h5> {{object.descrizione}}</h5>
+  </div>
+</center>
+<br>
+
+{% endblock %}

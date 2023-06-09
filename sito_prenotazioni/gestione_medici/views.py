@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
 from django.utils.dateparse import parse_datetime
 from django.contrib.messages.views import SuccessMessageMixin
@@ -55,9 +55,28 @@ class ModificaEsameView(SuccessMessageMixin, UpdateView):
     template_name = "gestione_medici/modifica_esame.html"
     success_url = reverse_lazy('gestione_medici:esami_caricati')
     success_message = "L'esame e' stato modificato con successo"
-    
 
-'''
+class ModificaInformazioniView(SuccessMessageMixin, UpdateView):
+    title = "Modifica informazioni sul tuo profilo medico"
+    model = Medico
+    fields = ['descrizione']
+    template_name = "gestione_medici/modifica_informazioni.html"
+    success_message = "Le informazioni del tuo profilo medico sono state modificate con successo"
+
+    def get_success_url(self):
+        return reverse_lazy('gestione_medici:modifica_informazioni', kwargs={'pk': self.kwargs['pk']})
+    
+class InformazioniMedicoView(DetailView):
+    title = "Pagina di informazioni sul medico"
+    model = Medico
+    template_name = "gestione_medici/presentazione.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['commenti'] = context['medico'].commenti
+        return context
+
+
 class EsameRicercaView(ListView):
     titolo = "La tua ricerca ha dato come risultato"
     model = Esame
@@ -91,8 +110,9 @@ class EsameRicercaView(ListView):
             print("Arrivato e ")
             risultati = risultati.filter(tipologia__exact=tipologia)
         
-        return risultati'''
-
+        return risultati
+        
+'''
 class EsameRicercaView(ListView):
     titolo = "La tua ricerca ha dato come risultato"
     model = Esame
@@ -124,4 +144,4 @@ class EsameRicercaView(ListView):
             print("Arrivato e ")
             risultati = risultati.filter(tipologia__exact=tipologia)
         
-        return risultati
+        return risultati'''

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %} 
+
+{% block title %} {{view.title}} {% endblock %} 
+
+{% block content %} 
+
+<div class="jumbotron text-center" style="margin-bottom:0">
+    <h1>Pagina per la modifica delle informazioni del profilo medico</h1>
+    <p>Compila i campi che vuoi modificare</p> 
+</div>
+
+<center>
+<div class="content-section col-md-8 col-md-offset-2">
+<form method="post" style="border: 1px solid black; margin: 4%; padding:10%; border-radius:1%;"> {% csrf_token %}
+
+    {{form | crispy}}
+    <br><br>
+    <center>
+    <input type="submit" class="btn btn-success" value="Modifica informazioni">
+    </center>
+
+  </form>
+</center>
+</div>
+{% endblock %}
