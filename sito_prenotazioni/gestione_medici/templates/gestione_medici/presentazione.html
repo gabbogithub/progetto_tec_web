@@ -7,22 +7,61 @@
 <br>
 <center>
 <h2> Pagina di {{object}} </h2>
-{% if object.utente.foto_profilo %}
-  <img src={{object.utente.foto_profilo.url}} alt="Immagine medico" class="object-fit-sm-contain" style="width: 200px; height: 200px;">
-{% else %}
-  <img src="{% static '/immagini/blank_profile_picture.png' %}" alt="Immagine default" class="object-fit-sm-contain" style="width: 200px; height: 200px;">
-{% endif%}
-</center>
 <br>
+<div class="container-fluid d-flex">
+  <div class="row">
+    <div class="col">
+    <div class="card text-white bg-info mb-3" style="width: 18rem;">
+      <img class="card-img-top"
+      {% if object.utente.foto_profilo %}
+        src={{object.utente.foto_profilo.url}} alt="Immagine medico"
+      {% else %}
+        src="{% static '/immagini/blank_profile_picture.png' %}" alt="Immagine default"
+      {% endif%}
+      >
 
-
-
-<br>
-<center>
-  <div class="w-50 mx-auto" style="overflow-wrap: break-word;">
-    <h5> {{object.descrizione}}</h5>
+      <div class="card-header">
+        Presentazione:
+      </div>
+      <div class="card-body">
+        <p class="card-text">{{object.descrizione}}</p>
+      </div>
+    </div>
   </div>
-</center>
-<br>
+  <div class="col align-self-center">
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <p class="card-text">Se sei stato un paziente del medico {{object}}
+          e vuoi aggiungere una recensione clicca sul bottone sotto</p>
+      </div>
+      <div class="card-footer">
+        <a href="#" class="btn btn-info">Scrivi recensione</a>
+      </div>
+    </div>
+  </div>
+</div>
 
+  <div class="container-fluid">
+    <center>
+      <h3>Ci sono {{commenti.count}} commenti:</h3>
+    </center>
+    {% for commento in commenti %}
+    <div class="media border" style="background-color: #E0E0E0;">
+      <div class="mr-3 mt-3" >
+        {% if commento.commentatore.foto_profilo%}
+          <img src={{commento.commentatore.foto_profilo.url}} class="media-object" style="width:60px">
+        {% else %}
+          <img src="{% static '/immagini/blank_profile_picture.png' %}" class="media-object" style="width:60px">
+        {% endif %}
+      </div>
+      <div class="media-body">
+        <h4><b>{{commento.commentatore}}</b> <small><i>Pubblicato in data {{commento.data}}</i></small></h4>
+        <p>{{commento.testo}}</p>
+      </div>
+    </div>
+    <br>
+    {% endfor %}
+  </div>
+<br>
+</div>
 {% endblock %}
