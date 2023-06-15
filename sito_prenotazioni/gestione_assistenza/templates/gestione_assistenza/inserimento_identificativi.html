@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %} Inserimento generalita' {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content%}
+
+<div class="jumbotron text-center" style="margin-bottom:0">
+    <h2>Inserisci di seguito il tuo nome e cognome per chattare con un operatore dell'assistenza</h2>
+</div>
+
+<br>
+
+<div class="d-flex justify-content-center">
+
+  {% crispy form %}
+
+</div>
+<br>
+
+
+<br>
+{% endblock %}
+    

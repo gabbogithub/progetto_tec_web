@@ -58,28 +58,54 @@ class Esame(DirtyFieldsMixin, models.Model):
                                on_delete=models.SET_NULL)
     
     def save(self, *args, **kwargs):
+        '''Prima caso di esame prenotato, poi modifica generica e infine cancellazione'''
         manda_mail = False
+        dirty_fields = self.get_dirty_fields(check_relationship=True)
+        print(dirty_fields)
 
         if self.is_dirty() and not self._state.adding:
-            dirty_fields = self.get_dirty_fields()
             campi_controllo = set(['tipologia', 'data', 'stato'])
             if not set(dirty_fields.keys()).isdisjoint(campi_controllo):
                 manda_mail = True
 
         try:
-            print(self.paziente)
-            if manda_mail and self.paziente is not None:
-                testo_mail = f"Gentile utente, l'esame prenotato per la data {self.data.date()} e' stato modificato"
-                send_mail(
-                "Notifica modifica esame",
-                testo_mail,
-                "sito_prenotazioni@gmail.com",
-                [self.paziente.email],
-                fail_silently=False,
-                )
+            if manda_mail:
+                if self.paziente is not None and self.stato == 'prenotato' and dirty_fields['stato'] == 'disponibile':
+                    testo_mail = (f"Gentile utente, l'esame che si svolgera' in data {self.data.strftime('%d-%m-%Y')}" 
+                                  f" alle ore {self.data.strftime('%H:%M:%S')} e' stato prenotato")
+                    send_mail(
+                    "Notifica prenotazione esame",
+                    testo_mail,
+                    "sito_prenotazioni@gmail.com",
+                    [self.paziente.email],
+                    fail_silently=False,
+                    )
+
+                elif self.paziente is not None:
+                    testo_mail = (f"Gentile utente, l'esame prenotato per la data {self.data.strftime('%d-%m-%Y')}" 
+                                  f" alle ore {self.data.strftime('%H:%M:%S')} e' stato modificato")
+                    send_mail(
+                    "Notifica modifica esame",
+                    testo_mail,
+                    "sito_prenotazioni@gmail.com",
+                    [self.paziente.email],
+                    fail_silently=False,
+                    )
+
+                elif dirty_fields['paziente'] is not None:
+                    paziente = UtenteCustom.objects.get(pk=dirty_fields['paziente'])
+                    testo_mail = (f"Gentile utente, la cancellazione della prenotazione per l'esame che si svolgera' in data" 
+                                  f" {self.data.strftime('%d-%m-%Y')} alle ore {self.data.strftime('%H:%M:%S')} e' stata effettuata")
+                    send_mail(
+                    "Notifica cancellazione esame",
+                    testo_mail,
+                    "sito_prenotazioni@gmail.com",
+                    [paziente.email],
+                    fail_silently=False,
+                    )
             super().save(*args, **kwargs)
         except:
-            pass
+            print("Errore")
     
     def __str__(self):
         '''Metodo per stampare tutti i campi dell'esame come una frase coerente'''
@@ -127,7 +153,7 @@ class Commento(models.Model):
 
     class Meta:
         verbose_name_plural = 'Commenti'
-        ordering = ['data']
+        ordering = ['-data']
         constraints = [
             models.UniqueConstraint(
                 fields=['medico', 'commentatore'], name='combinazione_medico_commentatore'

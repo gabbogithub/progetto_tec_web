@@ -1,28 +1,17 @@
-from django.shortcuts import render, redirect
+from typing import Any
+from django.db.models.query import QuerySet
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
-from django.utils.dateparse import parse_datetime
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.db import IntegrityError
 from .forms import *
-
-def ricerca_esami(request):
-    if request.method == "POST":
-        form = SearchEsamiForm(request.POST)
-        if form.is_valid():
-            nome = form.cleaned_data.get('search_nome')
-            cognome = form.cleaned_data.get('search_cognome')
-            data_inizio = form.cleaned_data.get('search_data_inizio')
-            data_fine = form.cleaned_data.get('search_data_fine')
-            categoria = form.cleaned_data.get('search_categoria')
-            return redirect('gestione_medici:ricerca_esami_risultati', nome, cognome, data_inizio, data_fine, categoria)
-    else:
-        form = SearchEsamiForm()
-    return render(request,template_name="gestione_medici/ricerca_esami.html", context={"form":form})
 
 @login_required
 def esami_caricati(request):
@@ -73,75 +62,45 @@ class InformazioniMedicoView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['commenti'] = context['medico'].commenti.all()
+        commenti_totali = context['medico'].commenti.all()
+        context['commenti'] = commenti_totali[:3]
+        context['lunghezza_commenti'] = len(commenti_totali)
         return context
 
-
-class EsameRicercaView(ListView):
-    titolo = "La tua ricerca ha dato come risultato"
-    model = Esame
-    template_name = 'gestione_medici/lista_esami.html'
+class CommentiMedicoView(ListView):
+    title = "Pagina con i commenti sul medico"
+    model = Commento
+    template_name = "gestione_medici/commenti_totali.html"
     paginate_by = 2
 
     def get_queryset(self):
-        risultati = self.model.objects.filter(stato__exact='disponibile')
-        nome = self.request.resolver_match.kwargs['nome']
-        cognome = self.request.resolver_match.kwargs['cognome']
-        data_inizio = self.request.resolver_match.kwargs['data_inizio']
-        data_fine = self.request.resolver_match.kwargs['data_fine']
-        tipologia = self.request.resolver_match.kwargs['tipologia']
-        print(type(nome), cognome, type(data_inizio), type(data_fine), tipologia)
+        medico = Medico.objects.get(pk=self.kwargs['pk'])
+        self.context = {'medico': medico}
+        return medico.commenti.all()
+    
+    def get_context_data(self, **kwargs):
+        self.context = self.context | super().get_context_data(**kwargs) #unione due dizionari
+        return self.context
+    
+class CreaCommentoView(SuccessMessageMixin, CreateView):
+    title = "Crea un commento"
+    model = Commento
+    form_class = CreaCommentoForm
+    template_name = 'gestione_medici/crea_commento.html'
+    success_message = "Il commento e' stato creato con successo"
 
-        if nome:
-            print("Arrivato a")
-            risultati = risultati.filter(medico__utente__first_name__icontains=nome)
-        if cognome:
-            print("Arrivato b")
-            risultati = risultati.filter(medico__utente__last_name__icontains=cognome)
-        if data_inizio != "None":
-            print("Arrivato c")
-            data_oggetto = parse_datetime(data_inizio)
-            risultati = risultati.filter(data__gte=data_oggetto)
-        if data_fine != "None":
-            print("Arrivato d")
-            data_oggetto = parse_datetime(data_fine)
-            risultati = risultati.filter(data__lte=data_oggetto)
-        if tipologia:
-            print("Arrivato e ")
-            risultati = risultati.filter(tipologia__exact=tipologia)
-        
-        return risultati
-        
-'''
-class EsameRicercaView(ListView):
-    titolo = "La tua ricerca ha dato come risultato"
-    model = Esame
-    template_name = 'gestione_medici/lista_esami.html'
-    paginate_by = 2
+    def form_valid(self, form):
+        form.instance.commentatore = self.request.user
+        form.instance.medico = Medico.objects.get(pk=self.kwargs['pk'])
+        return super().form_valid(form)
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            super().post(request, *args, **kwargs)
+        except IntegrityError:
+            messages.add_message(request, messages.ERROR, "Hai gia' commentato questo medico")
 
-    def get_queryset(self):
-        risultati = self.model.objects.filter(stato__exact='disponibile')
-        nome = self.request.resolver_match.kwargs['nome']
-        cognome = self.request.resolver_match.kwargs['cognome']
-        data_inizio = self.request.resolver_match.kwargs['data_inizio']
-        data_fine = self.request.resolver_match.kwargs['data_fine']
-        tipologia = self.request.resolver_match.kwargs['tipologia']
-        print(type(nome), cognome, type(data_inizio), type(data_fine), tipologia)
-
-        if nome:
-            print("Arrivato a")
-            risultati = risultati.filter(medico__utente__first_name__icontains=nome)
-        if cognome:
-            print("Arrivato b")
-            risultati = risultati.filter(medico__utente__last_name__icontains=cognome)
-        if data_inizio :
-            print("Arrivato c")
-            risultati = risultati.filter(data__gte=data_inizio)
-        if data_fine :
-            print("Arrivato d")
-            risultati = risultati.filter(data__lte=data_fine)
-        if tipologia:
-            print("Arrivato e ")
-            risultati = risultati.filter(tipologia__exact=tipologia)
-        
-        return risultati'''
+        return HttpResponseRedirect(reverse_lazy('gestione_medici:informazioni_medico', kwargs={'pk': self.kwargs['pk']}))
+    
+    def get_success_url(self):
+        return reverse_lazy('gestione_medici:informazioni_medico', kwargs={'pk': self.kwargs['pk']})

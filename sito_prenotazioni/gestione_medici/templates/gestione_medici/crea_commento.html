@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} {{view.title}}{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content%}
+
+<div class="jumbotron text-center" style="margin-bottom:0">
+    <h1>{{view.title}}</h1>
+</div>
+
+<br>
+
+<div class="d-flex justify-content-center">
+
+  {% crispy form %}
+
+</div>
+<br>
+
+
+<br>
+{% endblock %}

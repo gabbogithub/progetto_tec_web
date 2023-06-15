@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %} {{view.titolo}}{% endblock %} 
+
+{% block content %} 
+<br>
+<center>
+<h2> {{ view.titolo }} {{page_obj.paginator.count}} persone totali in attesa, {{object_list.count}} in questa pagina </h2>
+</center>
+<br>
+
+
+<table class="table table-light table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Identificativi utente</th>
+        <th scope="col">Da quando e' in attesa</th>
+        <th scope="col">Accesso</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for attesa in object_list %}
+      <tr>
+        <th scope="row">{{attesa.identificativi_utente}}</th>
+        <td>{{attesa.data}}</td>
+        <td><a class="btn btn-primary" href="{% url 'gestione_assistenza:chat_assistenza' request.user attesa.pk %}" role="button">Entra</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% include "paginatore.html" %}
+
+{% endblock %}

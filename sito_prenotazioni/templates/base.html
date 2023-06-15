@@ -37,7 +37,7 @@
 
 
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'gestione_medici:ricerca_esami' %}">Cerca esame</a>
+            <a class="nav-link" href="{% url 'gestione_utenti:ricerca_esami' %}">Cerca esame</a>
           </li>
 
           <li class="nav-item">
@@ -51,7 +51,7 @@
           {% endif%}
           
           <li class="nav-item">
-            <a class="nav-link" href="#">Assistenza clienti</a>
+            <a class="nav-link" href="{% url 'gestione_assistenza:richiesta_assistenza' %}">Assistenza clienti</a>
           </li>
 
         </ul>

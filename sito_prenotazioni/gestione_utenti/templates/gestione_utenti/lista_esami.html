@@ -4,9 +4,7 @@
 
 {% block content %} 
 <br>
-<center>
-<h2> {{ view.titolo }} {{ object_list.count }} esami </h2>
-</center>
+<h2 style="text-align:center"> {{ view.titolo }} {{ object_list.count }} esami </h2>
 <br>
 
 
@@ -24,7 +22,7 @@
 
   </div>
   <div class="card-footer">
-    <a href="#" class="btn btn-info">Prenotalo</a>
+    <a href={% url 'gestione_utenti:prenota_esame' e.pk %} class="btn btn-info">Prenotalo</a>
   </div>
 </div>
 </div>

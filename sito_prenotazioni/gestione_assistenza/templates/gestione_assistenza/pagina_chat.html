@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Assistenza clienti {% endblock %}
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
+{% block content %}
+
+<div id="avvertimento" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Abbandono chat</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>L'altro utente ha lasciato la chat</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br>
+<div class="jumbotron" style="text-align:center">
+  <h1 id="header">Benvenuto nella pagina dell'assistenza clienti!</h1>
+</div>
+<br>
+  <h3 style="text-align:center"> Chatlog: </h3>
+
+  <div class="container-fluid" style="text-align:center" id="chatlog">
+
+  </div>
+
+  <br><br>
+  <div class="container-fluid" style="text-align:center">
+    <div class="row justify-content-center">
+        <label for="msg" class="form-label" style="display:flex; flex-direction:column;">Messaggio:</label>
+        <div class="col-sm-3">
+        <input type="text" class="form-control" id="msg"> <br> <br>
+        </div>
+
+      <div class="col-md-auto">
+        <button id='bottone' type="button" class="btn btn-secondary" onclick="btnClick()">Manda</button>
+      </div>
+    </div>
+  </div>
+<script>
+
+function sanitizeString(input) {
+  const sanitizedString = input.replace(/[<>&"'`]/g, '');
+  return sanitizedString;
+}
+
+console.log(window.location.host)
+var socket = new WebSocket('ws://' + window.location.host + '/ws/chatws/{{pk}}/');
+
+var identificativi = sanitizeString("{{identificativi}}");
+var urlProfilo;
+{% if request.user.is_authenticated and request.user.foto_profilo %}
+ urlProfilo = "{{ request.user.foto_profilo.url }}"
+{% else %}
+  urlProfilo = "{% static '/immagini/blank_profile_picture.png' %}"
+{% endif %}
+
+var input = document.getElementById("msg");
+
+// Execute a function when the user presses a key on the keyboard
+input.addEventListener("keypress", function(event) {
+  // If the user presses the "Enter" key on the keyboard
+  if (event.key === "Enter") {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    document.getElementById("bottone").click();
+  }
+}); 
+
+function aggiungiMessaggio(data){
+  
+  var container = document.querySelector("#chatlog");
+  var dataMsg = sanitizeString(data["msg"]);
+  var dataIden = sanitizeString(data["iden"])
+
+  var chatMsg = document.createElement("div");
+  if (dataIden == identificativi)
+    chatMsg.className = "d-flex flex-row-reverse border p-3";
+  else
+    chatMsg.className = "d-flex flex-row border p-3";
+  var img = document.createElement("img");
+  img.src = sanitizeString(data["fotoProfilo"])
+  img.alt = "foto_utente"
+  img.className = "flex-shrink-0 me-3 mt-3 rounded-circle"
+  img.style.cssText = "width: 50px; height: 50px;"
+  var innerDiv = document.createElement("div");
+
+  var ts = new Date();
+  innerDiv.innerHTML =    "<h4>" + "<b>" + dataIden + "</b>" + " <small><i>" + 
+                              ts.getHours() + ":" + ts.getMinutes() + ":" + ts.getSeconds() + " </i></small></h4>" + 
+                              "<p>" + dataMsg + "</p>";
+  innerDiv.style.cssText = "word-break: break-all"
+
+  chatMsg.appendChild(img);
+  chatMsg.appendChild(innerDiv);
+  container.appendChild(chatMsg);
+  innerDiv.scrollIntoView();
+}
+
+function abbandono(data){
+  modale = new bootstrap.Modal(document.getElementById("avvertimento"));
+  modale.show();
+  document.getElementById("msg").disabled = true;
+  document.getElementById("bottone").disabled = true;
+}
+
+
+
+socket.onmessage = function(event){
+
+  var data = JSON.parse(event.data);
+  var situazione = sanitizeString(data['situazione'])
+  if (situazione == 'normale')
+    aggiungiMessaggio(data)
+  else if (situazione == 'abbandono')
+    abbandono(data)
+}
+
+function btnClick() {
+
+    var obj = new Object();
+    obj.msg = sanitizeString(document.querySelector('#msg').value);
+    obj.iden = sanitizeString(identificativi);
+    obj.fotoProfilo = sanitizeString(urlProfilo);
+    var string = JSON.stringify(obj);
+    socket.send(string);
+    document.querySelector('#msg').value = "";
+
+  }
+
+</script>
+
+{% endblock %}

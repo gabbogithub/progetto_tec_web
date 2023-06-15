@@ -6,8 +6,7 @@
 {% block content %} 
 <br>
 <center>
-<h2> Pagina di {{object}} </h2>
-<br>
+
 <div class="container-fluid d-flex">
   <div class="row">
     <div class="col">
@@ -21,7 +20,7 @@
       >
 
       <div class="card-header">
-        Presentazione:
+        Presentazione di {{object}}:
       </div>
       <div class="card-body">
         <p class="card-text">{{object.descrizione}}</p>
@@ -32,19 +31,19 @@
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <p class="card-text">Se sei stato un paziente del medico {{object}}
-          e vuoi aggiungere una recensione clicca sul bottone sotto</p>
+          e vuoi aggiungere una recensione clicca sul bottone sottostante</p>
       </div>
       <div class="card-footer">
-        <a href="#" class="btn btn-info">Scrivi recensione</a>
+        <a href={% url 'gestione_medici:crea_commento' view.kwargs.pk %} class="btn btn-info">Scrivi recensione</a>
       </div>
     </div>
   </div>
 </div>
 
   <div class="container-fluid">
-    <center>
-      <h3>Ci sono {{commenti.count}} commenti:</h3>
-    </center>
+    <h3>Ci sono {{lunghezza_commenti}} commenti, per vederli tutti clicca 
+      <a href={% url 'gestione_medici:commenti_totali' view.kwargs.pk %}>qui</a>, di seguito i piu' recenti:</h3>
+    <br>
     {% for commento in commenti %}
     <div class="media border" style="background-color: #E0E0E0;">
       <div class="mr-3 mt-3" >
@@ -54,7 +53,7 @@
           <img src="{% static '/immagini/blank_profile_picture.png' %}" class="media-object" style="width:60px">
         {% endif %}
       </div>
-      <div class="media-body">
+      <div class="media-body" style="word-break: break-all">
         <h4><b>{{commento.commentatore}}</b> <small><i>Pubblicato in data {{commento.data}}</i></small></h4>
         <p>{{commento.testo}}</p>
       </div>

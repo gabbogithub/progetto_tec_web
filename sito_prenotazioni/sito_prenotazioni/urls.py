@@ -26,7 +26,8 @@ urlpatterns = [
     re_path(r"^$|^\/$|^home\/$", sito_home, name="home"),
     path('utente/', include('utenti_custom.urls')),
     path('medici/', include('gestione_medici.urls')),
-    path('gestione_utenti/', include('gestione_utenti.urls'))
+    path('gestione_utenti/', include('gestione_utenti.urls')),
+    path('assistenza/', include('gestione_assistenza.urls'))
 ]
 
 if settings.DEBUG == True:

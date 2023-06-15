@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'gestione_utenti',
     'gestione_medici',
     'utenti_custom',
+    'gestione_assistenza'
 ]
 
 MIDDLEWARE = [
@@ -75,6 +78,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sito_prenotazioni.wsgi.application'
+ASGI_APPLICATION = 'sito_prenotazioni.asgi.application'
 
 
 # Database
@@ -157,3 +161,8 @@ BOOTSTRAP_DATEPICKER_PLUS = {
     }
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
