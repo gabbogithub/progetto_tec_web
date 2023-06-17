@@ -14,7 +14,6 @@ from datetime import datetime
 from utenti_custom.models import *
 from .forms import SearchEsamiForm
 
-# Create your views here.
 @login_required
 def situazione_utente(request):
     user = get_object_or_404(UtenteCustom, pk=request.user.pk)
@@ -55,6 +54,7 @@ def stampa_esame(request, pk):
     messages.error("La visita non e' stampabile")
     redirect('gestione_utenti:situazione')
 
+@login_required
 def cancella_prenotazione(request, pk):
     e = get_object_or_404(Esame, pk=pk)
 

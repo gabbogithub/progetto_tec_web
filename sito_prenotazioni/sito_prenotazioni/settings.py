@@ -43,9 +43,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'bootstrap_datepicker_plus',
+    'utenti_custom',
     'gestione_utenti',
     'gestione_medici',
-    'utenti_custom',
     'gestione_assistenza'
 ]
 
@@ -146,7 +146,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 LOGIN_REDIRECT_URL = '/?login=ok'
 LOGOUT_REDIRECT_URL = '/utente/logout_riuscito'
-LOGIN_URL = '/login/?auth=notok'
+LOGIN_URL = '/utente/login/?auth=notok'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 

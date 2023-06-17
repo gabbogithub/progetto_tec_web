@@ -11,9 +11,14 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.db import IntegrityError
+from braces.views import GroupRequiredMixin
+from django.contrib.auth.decorators import user_passes_test
 from .forms import *
 
-@login_required
+def ha_gruppo_medico(user):
+    return user.groups.filter(name='Medici').exists()
+
+@user_passes_test(ha_gruppo_medico)
 def esami_caricati(request):
     user = get_object_or_404(UtenteCustom, pk=request.user.pk)
     medico = user.medico
@@ -24,8 +29,8 @@ def esami_caricati(request):
     ctx = {'page_obj': pagina}
     return render(request,"gestione_medici/esami_caricati.html",ctx)
 
-class CreateEsameView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
-    #group_required = ["Medici"]
+class CreateEsameView(SuccessMessageMixin, GroupRequiredMixin, CreateView):
+    group_required = ['Medici']
     title = "Aggiungi un esame tra quelli caricati"
     form_class = CreateEsameForm
     template_name = 'gestione_medici/crea_esame.html'
@@ -37,7 +42,8 @@ class CreateEsameView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         form.instance.stato = 'disponibile'
         return super().form_valid(form)
 
-class ModificaEsameView(SuccessMessageMixin, UpdateView):
+class ModificaEsameView(SuccessMessageMixin, GroupRequiredMixin, UpdateView):
+    group_required = ['Medici']
     title = "Modifica l'esame"
     model = Esame
     form_class = ModificaEsameForm
@@ -45,7 +51,8 @@ class ModificaEsameView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('gestione_medici:esami_caricati')
     success_message = "L'esame e' stato modificato con successo"
 
-class ModificaInformazioniView(SuccessMessageMixin, UpdateView):
+class ModificaInformazioniView(SuccessMessageMixin, GroupRequiredMixin, UpdateView):
+    group_required = ['Medici']
     title = "Modifica informazioni sul tuo profilo medico"
     model = Medico
     fields = ['descrizione']
@@ -64,7 +71,6 @@ class InformazioniMedicoView(DetailView):
         context = super().get_context_data(**kwargs)
         commenti_totali = context['medico'].commenti.all()
         context['commenti'] = commenti_totali[:3]
-        context['lunghezza_commenti'] = len(commenti_totali)
         return context
 
 class CommentiMedicoView(ListView):
@@ -82,7 +88,7 @@ class CommentiMedicoView(ListView):
         self.context = self.context | super().get_context_data(**kwargs) #unione due dizionari
         return self.context
     
-class CreaCommentoView(SuccessMessageMixin, CreateView):
+class CreaCommentoView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     title = "Crea un commento"
     model = Commento
     form_class = CreaCommentoForm

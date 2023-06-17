@@ -41,7 +41,7 @@
 </div>
 
   <div class="container-fluid">
-    <h3>Ci sono {{lunghezza_commenti}} commenti, per vederli tutti clicca 
+    <h3>Ci sono {{page_obj.paginator.count}} commenti, per vederli tutti clicca 
       <a href={% url 'gestione_medici:commenti_totali' view.kwargs.pk %}>qui</a>, di seguito i piu' recenti:</h3>
     <br>
     {% for commento in commenti %}

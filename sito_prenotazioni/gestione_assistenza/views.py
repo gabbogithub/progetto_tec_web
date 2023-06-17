@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .forms import IdentificativiForm
 from django.contrib import messages
 from django.views.generic import ListView
+from braces.views import GroupRequiredMixin
 from .models import Chat
 
 
@@ -40,7 +41,8 @@ def chat_assistenza(request, identificativi, pk):
     return render(request, template_name='gestione_assistenza/pagina_chat.html', 
                   context={'identificativi':identificativi, 'pk':pk})
 
-class UtentiAttesaView(ListView):
+class UtentiAttesaView(GroupRequiredMixin, ListView):
+    group_required = ['Assistenza']
     title = "Pagina con gli utenti in attesa di assistenza"
     model = Chat
     template_name = "gestione_assistenza/utenti_attesa.html"

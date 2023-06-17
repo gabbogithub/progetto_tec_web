@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from dirtyfields import DirtyFieldsMixin
 from django.core.mail import send_mail
+from django.contrib.auth.models import Group
 from utenti_custom.models import UtenteCustom
 
 class Medico(models.Model):
@@ -15,6 +16,13 @@ class Medico(models.Model):
         """Placeholder"""
 
         verbose_name_plural = 'Medici'
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            gruppo = Group.objects.get(name="Medici")
+            gruppo.user_set.add(self.utente)
+
+        return super().save(*args, **kwargs)
     
     def __str__(self):
         return self.utente.__str__()
@@ -67,10 +75,10 @@ class Esame(DirtyFieldsMixin, models.Model):
             campi_controllo = set(['tipologia', 'data', 'stato'])
             if not set(dirty_fields.keys()).isdisjoint(campi_controllo):
                 manda_mail = True
-
+        print(self.tipologia)
         try:
             if manda_mail:
-                if self.paziente is not None and self.stato == 'prenotato' and dirty_fields['stato'] == 'disponibile':
+                if self.paziente is not None and self.stato == 'prenotato' and dirty_fields.get('stato', None) == 'disponibile':
                     testo_mail = (f"Gentile utente, l'esame che si svolgera' in data {self.data.strftime('%d-%m-%Y')}" 
                                   f" alle ore {self.data.strftime('%H:%M:%S')} e' stato prenotato")
                     send_mail(
@@ -104,8 +112,8 @@ class Esame(DirtyFieldsMixin, models.Model):
                     fail_silently=False,
                     )
             super().save(*args, **kwargs)
-        except:
-            print("Errore")
+        except Exception as ex:
+            print(f"Errore causato dall'eccezione del tipo {type(ex)}")
     
     def __str__(self):
         '''Metodo per stampare tutti i campi dell'esame come una frase coerente'''

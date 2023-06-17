@@ -22,7 +22,7 @@ class CustomLoginView(SuccessMessageMixin, LoginView):
     success_url = reverse_lazy('home')
     success_message = "Hai eseguito correttamente l'accesso"
 
-class CustomModificaView(SuccessMessageMixin, UpdateView):
+class CustomModificaView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     form_class = CustomUserChangeForm
     template_name = 'registration/modifica_informazioni.html'
     success_url = reverse_lazy('utenti_custom:modifica_informazioni')
@@ -31,7 +31,7 @@ class CustomModificaView(SuccessMessageMixin, UpdateView):
     def get_object(self):
         return self.request.user
     
-class CustomModificaPassword(SuccessMessageMixin, PasswordChangeView):
+class CustomModificaPassword(SuccessMessageMixin, LoginRequiredMixin, PasswordChangeView):
     form_class = CustomPasswordChangeForm
     template_name = 'registration/modifica_password.html'
     success_url = reverse_lazy('utenti_custom:modifica_password')

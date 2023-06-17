@@ -13,6 +13,7 @@ xhtml2pdf = "*"
 django-dirtyfields = "*"
 django-channels = "*"
 daphne = "*"
+django-braces = "*"
 
 [dev-packages]
 

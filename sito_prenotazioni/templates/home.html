@@ -2,12 +2,72 @@
 
 {% load static %}
 
-{% block title %} Home sito prenotazioni {% endblock %} 
+{% block head%} 
+<style>
+    a.list-group-item {
+        text-align: center;
+      }
+</style>
+{% endblock %}
 
+{% block title %} Home sito prenotazioni {% endblock %} 
 
 {% block content %} 
 
-<h2 style="text-align:center;">Homepage sito prenotazioni mediche</h2>
-<p style="text-align:center;">Comincia la navigazione</p>
+<div class="mt-4 p-5 bg-primary text-white rounded">
+    <div class="container">
+      <h1 style="text-align:center;" class="display-4">Benvenuto nella homepage del sito di prenotazioni mediche</h1>
+      <p style="text-align:center;" class="lead">Per cominciare a navigare nel sito clicca su una delle operazioni qui sotto</è>
+    </div>
+</div>
+
+<br><br>
+
+<div class="list-group ">
+    <a href="{% url 'gestione_utenti:ricerca_esami' %}" class="list-group-item list-group-item-action list-group-item-info">
+        Cerca un esame</a>
+    {% if not request.user.groups.all.0.name == 'Assistenza'%}
+        <a href="{% url 'gestione_assistenza:richiesta_assistenza' %}" 
+        class="list-group-item list-group-item-action list-group-item-info">Contatta un operatore dell'assistenza clienti</a>
+    {% endif %}
+    {% if not request.user.is_authenticated %}
+        <a href="{% url 'utenti_custom:registrazione' %}" class="list-group-item list-group-item-action list-group-item-info">
+            Crea un account</a>
+        <a href="{% url 'utenti_custom:login' %}" class="list-group-item list-group-item-action list-group-item-info">
+            Accedi con il tuo account</a>
+    {% else %}
+        <a href="{% url 'gestione_utenti:situazione' %}" class="list-group-item list-group-item-action list-group-item-info">
+            Controlla gli esami prenotati</a>
+        <a href="{% url 'utenti_custom:modifica_informazioni' %}" 
+        class="list-group-item list-group-item-action list-group-item-info">Modifica le informazioni relative all'account</a>
+        <a href="{% url 'utenti_custom:logout' %}" class="list-group-item list-group-item-action list-group-item-info ">
+            Esci dal tuo account</a>
+    {% endif %}
+</div>
+
+{% if request.user.groups.all.0.name == 'Medici' %}
+    <br>
+    <div class="list-group">
+        <a href="{% url 'gestione_medici:esami_caricati' %}" 
+        class="list-group-item list-group-item-action list-group-item-success">Controlla gli esami caricati</a>
+        <a href="{% url 'gestione_medici:modifica_informazioni' request.user.medico.pk %}" 
+        class="list-group-item list-group-item-action list-group-item-success">Modifica le informazioni relative al profilo medico
+        </a>
+        <a href="{% url 'gestione_medici:crea_esame' %}" class="list-group-item list-group-item-action list-group-item-success">
+            Aggiungi un nuovo esame</a>
+    </div>
+    <br><br>
+{% endif %}
+
+{% if request.user.groups.all.0.name == 'Assistenza' %}
+    <br><br>
+    <div class="list-group">
+        <a href="{% url 'gestione_assistenza:utenti_attesa' %}" 
+        class="list-group-item list-group-item-action list-group-item-warning">Controlla gli utenti in attesa di assistenza</a>
+        <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action list-group-item-warning">
+            Accedi alla pagina riservata all'assistenza clienti</a>
+    </div>
+    <br><br>
+{% endif %}
 
 {% endblock %}

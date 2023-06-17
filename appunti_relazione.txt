@@ -19,3 +19,8 @@ ho già implementato una modifica degli esami per i medici e avrei dovuto implem
 qualcosa di molto simile, così invece ho imparato qualcosa di nuovo.
 
 -un medico non deve essere in grado di modificare l'utente che ha prenotato o no l'esame
+
+-niente gruppo specifico per gli utenti registrati perché è sufficienti il controllo con
+login_required. Ai medici vengono dati i privilegi di cambiare certi aspetti degli esami
+e della loro descrizione. All'assistenza viene data la possibilita' di accedere alla
+pagina degli admin ma non possono vedere o modificare tutti i modelli.
