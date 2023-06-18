@@ -18,16 +18,44 @@ from .forms import *
 def ha_gruppo_medico(user):
     return user.groups.filter(name='Medici').exists()
 
+def filtra_esami(form, esami):
+        categoria = form.cleaned_data.get('search_categoria')
+        
+        if categoria == 'stato':
+            stato = form.cleaned_data.get('search_stato')
+            esami = esami.filter(stato__exact=stato)
+
+        elif categoria == 'data':
+            inizio = form.cleaned_data.get('search_data_inizio')
+            fine = form.cleaned_data.get('search_data_fine')
+            if inizio:
+                esami = esami.filter(data__gte=inizio)
+            if fine:
+                esami = esami.filter(data__lte=fine)
+        
+        return esami
+
 @user_passes_test(ha_gruppo_medico)
 def esami_caricati(request):
     user = get_object_or_404(UtenteCustom, pk=request.user.pk)
+    parametri_ricerca = ['search_categoria', 'search_stato', 'search_data_inizio', 'search_data_fine']
+    parametri_separati = {f"&{key}={value}" for key, value in request.GET.items() if key in parametri_ricerca}
+    parametri_uniti = ''.join(parametri_separati)
     medico = user.medico
-    esami = medico.esami_caricati.all()
+    esami = medico.esami_caricati.all().order_by('-data')
+    risultati = FiltraEsameForm(request.GET)
+    if risultati.is_valid():
+        esami = filtra_esami(risultati, esami)
     paginatore = Paginator(esami, 1)
     numero_pagina = request.GET.get("page")
     pagina = paginatore.get_page(numero_pagina)
-    ctx = {'page_obj': pagina}
+    form = FiltraEsameForm()
+    ctx = {'page_obj':pagina, 'form':form, 'stringa_ricerca': parametri_uniti}
+    print(esami)
     return render(request,"gestione_medici/esami_caricati.html",ctx)
+
+class RicercaEsameView(ListView):
+    template_name = 'gestione_medici/crea_esame.html'
 
 class CreateEsameView(SuccessMessageMixin, GroupRequiredMixin, CreateView):
     group_required = ['Medici']

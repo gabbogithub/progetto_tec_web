@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from dirtyfields import DirtyFieldsMixin
 from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth.models import Group
 from utenti_custom.models import UtenteCustom
 
@@ -69,13 +70,12 @@ class Esame(DirtyFieldsMixin, models.Model):
         '''Prima caso di esame prenotato, poi modifica generica e infine cancellazione'''
         manda_mail = False
         dirty_fields = self.get_dirty_fields(check_relationship=True)
-        print(dirty_fields)
 
         if self.is_dirty() and not self._state.adding:
             campi_controllo = set(['tipologia', 'data', 'stato'])
             if not set(dirty_fields.keys()).isdisjoint(campi_controllo):
                 manda_mail = True
-        print(self.tipologia)
+
         try:
             if manda_mail:
                 if self.paziente is not None and self.stato == 'prenotato' and dirty_fields.get('stato', None) == 'disponibile':
@@ -84,7 +84,7 @@ class Esame(DirtyFieldsMixin, models.Model):
                     send_mail(
                     "Notifica prenotazione esame",
                     testo_mail,
-                    "sito_prenotazioni@gmail.com",
+                    settings.EMAIL_HOST_USER,
                     [self.paziente.email],
                     fail_silently=False,
                     )
@@ -95,7 +95,7 @@ class Esame(DirtyFieldsMixin, models.Model):
                     send_mail(
                     "Notifica modifica esame",
                     testo_mail,
-                    "sito_prenotazioni@gmail.com",
+                    settings.EMAIL_HOST_USER,
                     [self.paziente.email],
                     fail_silently=False,
                     )
@@ -107,7 +107,7 @@ class Esame(DirtyFieldsMixin, models.Model):
                     send_mail(
                     "Notifica cancellazione esame",
                     testo_mail,
-                    "sito_prenotazioni@gmail.com",
+                    settings.EMAIL_HOST_USER,
                     [paziente.email],
                     fail_silently=False,
                     )

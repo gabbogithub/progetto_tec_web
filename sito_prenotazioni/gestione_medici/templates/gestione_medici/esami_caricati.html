@@ -1,48 +1,103 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %} 
 
 {% block title %} Situazione visite create {% endblock %} 
 
 {% block content %} 
 
-<br>
-<center>
-<h2> Stato attuale dei tuoi esami caricati</h2>
-</center>
-
-<br>
-<div class="d-flex justify-content-center">
-{% for e in page_obj  %}
-<br>
-<div class="d-flex aligns-items-center justify-content-center card text-center w-50 mx-auto">
-<div class="card text-center">
-  <div class="card-header">
-     Esame della tipologia {{ e.tipologia }}
-  </div>
-  <div class="card-body">
-    {% if e.stato == 'prenotato' or e.stato == 'disponibile' %}
-        <p class="card-text"> Esame che verrà eseguito in data {{e.data}}</p>
-    {% elif e.stato == 'eseguito' %}
-        <p class="card-text"> Esame eseguito in data {{e.data}}</p>
-    {% elif e.stato == 'cancellato' %}
-      <p class="card-text"> Esame che doveva essere eseguito in data {{e.data}}</p>
-    {% endif%}
-
-    {% if e.paziente is not None %}
-      <p class="card-text"> ed e' stato prenotato da {{e.paziente}}</p>
-    {% elif e.stato != 'cancellato' %}
-      <p class="card-text"> e non e' ancora stato prenotato</p>
-    {% endif %}
-  </div>
-    <div class="card-footer">
-      <a href="{% url 'gestione_medici:modifica_esame' e.pk %}" 
-      class="btn btn-warning" style="">Modifica</a>
+<div class="mt-4 p-5 bg-success text-white rounded">
+  <div class="container">
+    <h2 style="text-align:center;" class="display-4">Stato attuale dei tuoi esami caricati</h2>
   </div>
 </div>
-</div>
-</div>
-<br>
-{%endfor%}
 
-{% include "paginatore.html" %}
+<br>
+<div class="row">
+  <div class='col p-5'>
+    {% crispy form %}
+  </div>
+  <div class="col-sm-8 ps-5">
+    {% for e in page_obj  %}
+      <br>
+      <div class="card text-center w-75">
+        <div class="card-header">
+          Esame della tipologia {{ e.tipologia }}
+        </div>
+        <div class="card-body">
+          {% if e.stato == 'prenotato' or e.stato == 'disponibile' %}
+              <p class="card-text"> Esame che verrà eseguito in data {{e.data}}</p>
+          {% elif e.stato == 'eseguito' %}
+              <p class="card-text"> Esame eseguito in data {{e.data}}</p>
+          {% elif e.stato == 'cancellato' %}
+            <p class="card-text"> Esame che doveva essere eseguito in data {{e.data}}</p>
+          {% endif%}
+
+          {% if e.paziente is not None %}
+            <p class="card-text"> ed e' stato prenotato da {{e.paziente}}</p>
+          {% elif e.stato != 'cancellato' %}
+            <p class="card-text"> e non e' ancora stato prenotato</p>
+          {% endif %}
+        </div>
+        <div class="card-footer">
+          <a href="{% url 'gestione_medici:modifica_esame' e.pk %}" 
+          class="btn btn-warning" style="">Modifica</a>
+        </div>
+      </div>
+      <br>
+    {% endfor %}
+  </div>
+</div>
+<script>
+  document.getElementById("id_search_categoria").addEventListener("change", function() {
+    if (this.value == "stato") {
+      document.getElementById("div_id_search_stato").style.display = "block"
+      document.getElementById("div_id_search_data_inizio").style.display = "none"
+      document.getElementById("div_id_search_data_fine").style.display = "none"
+      document.getElementById("submit-id-submit").value = "Filtra Esami"
+    }
+
+    else if (this.value == "data") {
+      document.getElementById("div_id_search_stato").style.display = "none"
+      document.getElementById("div_id_search_data_inizio").style.display = "block"
+      document.getElementById("div_id_search_data_fine").style.display = "block"
+      document.getElementById("submit-id-submit").value = "Filtra Esami"
+    }
+
+    else {
+      document.getElementById("div_id_search_stato").style.display = "none"
+      document.getElementById("div_id_search_data_inizio").style.display = "none"
+      document.getElementById("div_id_search_data_fine").style.display = "none"
+      document.getElementById("submit-id-submit").value = "Rimuovi filtri"
+    }
+  })
+
+  document.getElementById("div_id_search_stato").style.display = "none"
+  document.getElementById("div_id_search_data_inizio").style.display = "none"
+  document.getElementById("div_id_search_data_fine").style.display = "none"
+  document.getElementById("submit-id-submit").value = "Rimuovi filtri"
+</script>
+
+<br>
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href="?page=1{{stringa_ricerca}}">&laquo; prima</a></li>
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{{stringa_ricerca}}">precedente</a></li>
+        {% else %}
+          <li class="page-item disabled"><a class="page-link" href="#">precedente</a></li>
+        {% endif %}
+
+        <li class="page-item active " aria-current="page">
+          <a class="page-link" href="#">Pagina {{ page_obj.number }} di {{ page_obj.paginator.num_pages }}</a>
+        </li>
+
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{{stringa_ricerca}}">prossima</a></li>
+        {% else %}
+          <li class="page-item"><a class="page-link disabled" href="#">prossima</a></li>
+        {% endif %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{{stringa_ricerca}}">ultima &raquo;</a></li>
+  </ul>
+</nav>
 
 {% endblock %}

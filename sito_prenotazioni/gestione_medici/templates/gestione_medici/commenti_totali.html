@@ -5,10 +5,14 @@
 
 {% block content %} 
 <br>
-<center>
-<h2> Numero di commenti riguardo <a href={% url 'gestione_medici:informazioni_medico' view.kwargs.pk %}>{{medico}}</a>
-    in questa pagina: {{ object_list.count }} </h2>
-</center>
+
+
+  <div class="container">
+    <h2 class="display-5 text-center">Numero di commenti riguardo <a href={% url 'gestione_medici:informazioni_medico' 
+      view.kwargs.pk %}>{{medico}}</a>in questa pagina: {{ object_list.count }} </h2>
+  </div>
+
+
 <br>
 
 

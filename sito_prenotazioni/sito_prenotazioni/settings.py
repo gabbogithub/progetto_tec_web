@@ -149,6 +149,7 @@ LOGOUT_REDIRECT_URL = '/utente/logout_riuscito'
 LOGIN_URL = '/utente/login/?auth=notok'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST_USER = "sito_prenotazioni@gmail.com"
 
 BOOTSTRAP_DATEPICKER_PLUS = {
     "options": {

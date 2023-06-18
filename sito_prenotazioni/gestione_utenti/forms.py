@@ -15,6 +15,6 @@ class SearchEsamiForm(forms.Form):
     search_data_inizio = forms.DateTimeField(label="Da quando?", required=False, widget=DateTimePickerInput())
     search_data_fine = forms.DateTimeField(label="Fino a quando?", required=False, 
                                            widget=DateTimePickerInput(range_from='search_data_inizio'))
-    search_categoria = forms.ChoiceField(label="Che tipo di visita?", choices=[('','---------')] + Esame.TIPOLOGIE_POSSIBILI, 
+    search_tipologia = forms.ChoiceField(label="Che tipo di visita?", choices=[('','---------')] + Esame.TIPOLOGIE_POSSIBILI, 
                                          required=False) #viene aggiunta una label vuota se l'utente non vuole selezionare
-                                                         #la categoria
+                                                         #la tipologia

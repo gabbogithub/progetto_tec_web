@@ -17,8 +17,8 @@ from .forms import SearchEsamiForm
 @login_required
 def situazione_utente(request):
     user = get_object_or_404(UtenteCustom, pk=request.user.pk)
-    esami = user.esami.all()
-    paginatore = Paginator(esami, 1)
+    esami = user.esami.all().order_by('-data')
+    paginatore = Paginator(esami, 2)
     numero_pagina = request.GET.get("page")
     pagina = paginatore.get_page(numero_pagina)
     ctx = {'page_obj': pagina}
@@ -80,8 +80,8 @@ def ricerca_esami(request):
             cognome = form.cleaned_data.get('search_cognome')
             data_inizio = form.cleaned_data.get('search_data_inizio')
             data_fine = form.cleaned_data.get('search_data_fine')
-            categoria = form.cleaned_data.get('search_categoria')
-            return redirect('gestione_utenti:ricerca_esami_risultati', nome, cognome, data_inizio, data_fine, categoria)
+            tipologia = form.cleaned_data.get('search_tipologia')
+            return redirect('gestione_utenti:ricerca_esami_risultati', nome, cognome, data_inizio, data_fine, tipologia)
     else:
         form = SearchEsamiForm()
     return render(request,template_name="gestione_utenti/ricerca_esami.html", context={"form":form})
@@ -89,6 +89,9 @@ def ricerca_esami(request):
 @login_required
 def prenota_esame(request, pk):
     e = get_object_or_404(Esame, pk=pk)
+    if e.medico.utente == request.user:
+        messages.error(request, "Non puoi prenotare un esame creato da te stesso")
+        return redirect('gestione_utenti:ricerca_esami')
     e.stato = 'prenotato'
     e.paziente = request.user
     e.save()
