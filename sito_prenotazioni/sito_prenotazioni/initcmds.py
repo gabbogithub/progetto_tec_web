@@ -1,4 +1,6 @@
 from django.contrib.auth.models import Group, Permission
+import random
+import sys
 
 
 def crea_gruppi():
@@ -23,7 +25,16 @@ def crea_gruppi():
         nuovo_gruppo.save()
 
 def crea_db():
-    pass
+    with open('file_init/nomi.txt', 'r', encoding='utf-8') as nomi, open('file_init/cognomi.txt', 'r', encoding='utf-8') as cognomi:
+        nomi = nomi.read().splitlines()
+        cognomi = cognomi.read().splitlines()
+        for i in range(50):
+            nome = random.choice(nomi)
+            cognome = random.choice(cognomi)
+            print(i, nome, cognome)
 
 def elimina_db():
     pass
+
+if __name__ == '__main__':
+    crea_db()
