@@ -3,6 +3,7 @@ from django.test.client import Client
 from django.urls import reverse
 from zoneinfo import ZoneInfo
 from datetime import datetime, timedelta
+import locale
 from utenti_custom.models import UtenteCustom
 from gestione_medici.models import Medico, Esame
 from .views import EsameRicercaView
@@ -241,3 +242,39 @@ class RicercaEsamiViewTest(TestCase):
                                               'data_inizio':'None', 'data_fine':'None'}) + '?page=2')
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(response.context['page_obj'], esami[num_pagine:])
+
+    def test_ricerca_esami_non_presenti(self):
+        utente_prova1, _, medico = crea_utenti_medico()
+        data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
+        Esame.objects.create(tipologia='ematochimica', medico=medico, data=data, 
+                             stato='disponibile')
+        client = Client()
+        client.force_login(user=utente_prova1)
+        response = client.get(reverse('gestione_utenti:ricerca_esami_risultati', 
+                                      kwargs={'tipologia':'', 'nome':'sbagliato', 'cognome':'', 
+                                              'data_inizio':'None', 'data_fine':'None'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['page_obj'], [])
+        self.assertContains(response, "Non sono stati trovati esami")
+
+    def test_contenuto_esame_corretto(self):
+        utente_prova1, _, medico = crea_utenti_medico()
+        data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
+        esame = Esame.objects.create(tipologia='ematochimica', medico=medico, data=data, 
+                             stato='disponibile')
+        client = Client()
+        client.force_login(user=utente_prova1)
+        response = client.get(reverse('gestione_utenti:ricerca_esami_risultati', 
+                                      kwargs={'tipologia':'', 'nome':'', 'cognome':'', 
+                                              'data_inizio':'None', 'data_fine':'None'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['page_obj'], [esame])
+        self.assertContains(response, esame.tipologia)
+        self.assertContains(response, esame.medico.__str__())
+        self.assertContains(response, esame.stato)
+        locale.setlocale(locale.LC_TIME, 'it_IT') 
+        giorno = esame.data.strftime('%A').capitalize()
+        mese = esame.data.strftime('%B').capitalize()
+        data = f"{giorno} {esame.data.strftime('%d')} {mese} {esame.data.strftime('%Y %H:%M')}"
+        self.assertContains(response, data)
+        self.assertContains(response, 'Prenotalo')

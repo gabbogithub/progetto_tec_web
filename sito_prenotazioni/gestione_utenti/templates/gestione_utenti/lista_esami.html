@@ -4,7 +4,11 @@
 
 {% block content %} 
 <br>
-<h2 style="text-align:center"> {{ view.titolo }} {{ object_list.count }} esami </h2>
+{% if object_list.count == 0 %}
+  <h2 style="text-align:center"> Non sono stati trovati esami</h2>
+{% else %}
+  <h2 style="text-align:center"> {{ view.titolo }} {{ object_list.count }} esami </h2>
+{% endif %}
 <br>
 
 

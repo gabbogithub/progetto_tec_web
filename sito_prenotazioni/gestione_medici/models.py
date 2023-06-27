@@ -103,7 +103,8 @@ class Esame(DirtyFieldsMixin, models.Model):
                 elif dirty_fields['paziente'] is not None:
                     paziente = UtenteCustom.objects.get(pk=dirty_fields['paziente'])
                     testo_mail = (f"Gentile utente, la cancellazione della prenotazione per l'esame che si svolgera' in data" 
-                                  f" {self.data.strftime('%d-%m-%Y')} alle ore {self.data.strftime('%H:%M:%S')} e' stata effettuata")
+                                  f" {self.data.strftime('%d-%m-%Y')} alle ore {self.data.strftime('%H:%M:%S')} e'" 
+                                  f" stata effettuata")
                     send_mail(
                     "Notifica cancellazione esame",
                     testo_mail,
