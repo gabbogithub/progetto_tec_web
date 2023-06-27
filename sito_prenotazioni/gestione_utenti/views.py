@@ -102,7 +102,7 @@ class EsameRicercaView(ListView):
     titolo = "La tua ricerca ha dato come risultato"
     model = Esame
     template_name = 'gestione_utenti/lista_esami.html'
-    paginate_by = 2
+    paginate_by =  5
 
     def get_queryset(self):
         risultati = self.model.objects.filter(stato__exact='disponibile')

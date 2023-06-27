@@ -1,3 +1,5 @@
 from django.test import TestCase
+from .models import Esame
 
-# Create your tests here.
+class EsameMetodilTest(TestCase):
+    pass
