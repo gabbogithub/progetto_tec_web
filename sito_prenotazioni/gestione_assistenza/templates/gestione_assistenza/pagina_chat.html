@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %} Assistenza clienti {% endblock %}
+{% block title %} {{title}} {% endblock %}
 <style>
   html {
     scroll-behavior: smooth;
@@ -26,7 +26,6 @@
   </div>
 </div>
 
-<br>
 <div class="mt-4 p-5 bg-warning text-white rounded">
   <div class="container">
     <h2 style="text-align:center;" class="display-4">Benvenuto nella pagina dell'assistenza clienti!</h2>
@@ -48,7 +47,7 @@
         </div>
 
       <div class="col-md-auto">
-        <button id='bottone' type="button" class="btn btn-secondary" onclick="btnClick()">Manda</button>
+        <button id='bottone' type="button" class="btn btn-warning" onclick="btnClick()">Manda</button>
       </div>
     </div>
   </div>
@@ -72,17 +71,19 @@ var urlProfilo;
 
 var input = document.getElementById("msg");
 
-// Execute a function when the user presses a key on the keyboard
+/** 
+ * Aggiunge al bottone di invio un event listener per permettere di inviare 
+ * anche premendo "invio"
+ */
 input.addEventListener("keypress", function(event) {
-  // If the user presses the "Enter" key on the keyboard
   if (event.key === "Enter") {
-    // Cancel the default action, if needed
+    // Elimina l'azione di default
     event.preventDefault();
-    // Trigger the button element with a click
     document.getElementById("bottone").click();
   }
 }); 
 
+// funzione per aggiungere un messaggio al chatlog
 function aggiungiMessaggio(data){
   
   var container = document.querySelector("#chatlog");
@@ -113,6 +114,7 @@ function aggiungiMessaggio(data){
   innerDiv.scrollIntoView();
 }
 
+// funzione che mostra il modale di abbandono
 function abbandono(data){
   modale = new bootstrap.Modal(document.getElementById("avvertimento"));
   modale.show();
@@ -121,7 +123,7 @@ function abbandono(data){
 }
 
 
-
+// funzione per la gestione dei messaggi arrivati in base alla loro categoria
 socket.onmessage = function(event){
 
   var data = JSON.parse(event.data);
@@ -132,6 +134,7 @@ socket.onmessage = function(event){
     abbandono(data)
 }
 
+// funzione che invio all'indirizzo del websocket l'utente messaggio scritto come JSON
 function btnClick() {
 
     var obj = new Object();

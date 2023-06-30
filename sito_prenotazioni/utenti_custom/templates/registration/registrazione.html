@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %} Registrazione {% endblock %} 
+{% block title %} {{view.title}} {% endblock %} 
 
 {% load crispy_forms_tags %} 
 
 {% block content %}
+
+<br>
+
+<div class="mt-4 p-5 bg-secondary text-white rounded">
+  <h1 style="text-align:center;" class="display-4">Pagina di Registrazione</h1>
+  <p style="text-align:center;" class="display-6">Si prega di compilare i campi necessari</p> 
+</div>
 
 <br>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 {% load static %}
 <head>
   <meta charset="utf-8">
@@ -78,7 +78,6 @@
             </li>
             {% endif %}
             <li class="nav-item">
-              <!-- User profile image -->
               <span class="navbar-text">
                 {% if request.user.is_authenticated and request.user.foto_profilo %}
                   <img src="{{ request.user.foto_profilo.url }}" alt="Foto profilo" class="rounded-circle mt-1 me-2" style="width: 32px; height: 32px;">

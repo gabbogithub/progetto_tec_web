@@ -31,29 +31,38 @@
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <p class="card-text">Se sei stato un paziente del medico {{object}}
-          e vuoi aggiungere una recensione clicca sul bottone sottostante</p>
+          e vuoi aggiungere un commento, clicca sul bottone sottostante
+        </p>
       </div>
       <div class="card-footer">
-        <a href={% url 'gestione_medici:crea_commento' view.kwargs.pk %} class="btn btn-info">Scrivi recensione</a>
+        <a href={% url 'gestione_medici:crea_commento' view.kwargs.pk %} 
+        class="btn btn-success">Scrivi commento
+        </a>
       </div>
     </div>
   </div>
 </div>
 
   <div class="container-fluid">
+    <div class="mt-4 p-5 bg-success text-white rounded">
     <h3>Ci sono {{page_obj.paginator.count}} commenti, per vederli tutti clicca 
-      <a href={% url 'gestione_medici:commenti_totali' view.kwargs.pk %}>qui</a>, di seguito i piu' recenti:</h3>
+      <a style="color: #90ee90" href={% url 'gestione_medici:commenti_totali' view.kwargs.pk %}>qui</a>
+      , di seguito i piu' recenti:
+    </h3>
+    </div>
     <br>
     {% for commento in commenti %}
-    <div class="media border" style="background-color: #E0E0E0;">
+    <div class="d-flex flex-row border p-3" style="background-color: #8db600">
       <div class="mr-3 mt-3" >
         {% if commento.commentatore.foto_profilo%}
-          <img src={{commento.commentatore.foto_profilo.url}} class="media-object" style="width:60px">
+          <img src={{commento.commentatore.foto_profilo.url}} class="flex-shrink-0 me-3 mt-3 " 
+          style="width:60px; height: 60px;">
         {% else %}
-          <img src="{% static '/immagini/blank_profile_picture.png' %}" class="media-object" style="width:60px">
+          <img src="{% static '/immagini/blank_profile_picture.png' %}" class="flex-shrink-0 me-3 mt-3 "
+           style="width:60px; height: 60px;">
         {% endif %}
       </div>
-      <div class="media-body" style="word-break: break-all">
+      <div style="word-break: break-all">
         <h4><b>{{commento.commentatore}}</b> <small><i>Pubblicato in data {{commento.data}}</i></small></h4>
         <p>{{commento.testo}}</p>
       </div>

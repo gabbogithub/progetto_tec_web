@@ -11,7 +11,8 @@ urlpatterns = [
     path("stampa_esame/<int:pk>/", stampa_esame, name='stampa_esame'),
     path("cancella_prenotazione/<int:pk>/", cancella_prenotazione, name='cancella_prenotazione'),
     path('ricerca_esami/', ricerca_esami, name='ricerca_esami'),
-    path("ricerca_esami/<empty_str:nome>/<empty_str:cognome>/<empty_str:data_inizio>/<empty_str:data_fine>/<empty_str:tipologia>/", 
-         EsameRicercaView.as_view(), name='ricerca_esami_risultati'),
+    path("ricerca_esami/<empty_str:nome>/<empty_str:cognome>/<empty_str:data_inizio>/"
+         "<empty_str:data_fine>/<empty_str:tipologia>/", EsameRicercaView.as_view(), 
+         name='ricerca_esami_risultati'),
     path('prenota_esame/<int:pk>/', prenota_esame, name='prenota_esame')
 ]

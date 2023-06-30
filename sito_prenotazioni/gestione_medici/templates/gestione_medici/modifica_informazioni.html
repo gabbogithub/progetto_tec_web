@@ -6,22 +6,19 @@
 
 {% block content %} 
 
-<div class="jumbotron text-center" style="margin-bottom:0">
-    <h1>Pagina per la modifica delle informazioni del profilo medico</h1>
-    <p>Compila i campi che vuoi modificare</p> 
+<div class="mt-4 p-5 bg-success text-white rounded">
+    <h1 style="text-align:center;" class="display-4">Pagina di modifica delle informazioni del profilo medico</h1>
+    <p style="text-align:center;" class="display-6">Compila i campi che vuoi modificare</p> 
 </div>
 
-<center>
-<div class="content-section col-md-8 col-md-offset-2">
-<form method="post" style="border: 1px solid black; margin: 4%; padding:10%; border-radius:1%;"> {% csrf_token %}
 
-    {{form | crispy}}
+<div class="container" style="text-align:center;">
+  <form method="post" style="border: 1px solid black; margin: 4%; padding:10%; border-radius:1%;"> {% csrf_token %}
+
+    {{form | crispy }}
     <br><br>
-    <center>
-    <input type="submit" class="btn btn-success" value="Modifica informazioni">
-    </center>
+    <input type="submit" class="btn btn-success" style="text-align:center;" value="Modifica informazioni">
 
   </form>
-</center>
 </div>
 {% endblock %}

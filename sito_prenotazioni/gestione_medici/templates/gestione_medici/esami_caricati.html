@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %} 
 
-{% block title %} Situazione visite create {% endblock %} 
+{% block title %} {{title}} {% endblock %} 
 
 {% block content %} 
 
 <div class="mt-4 p-5 bg-success text-white rounded">
-  <div class="container">
-    <h2 style="text-align:center;" class="display-4">Stato attuale dei tuoi esami caricati</h2>
-  </div>
+  <h2 style="text-align:center;" class="display-4">Stato attuale dei tuoi esami caricati</h2>
 </div>
 
 <br>
@@ -47,7 +45,12 @@
     {% endfor %}
   </div>
 </div>
+
 <script>
+  /**
+   * Aggiunta di un event listener al selettore della categoria per fare in modo che quando
+   * cambia, vengano visualizzati gli elementi giusti per filtrare la ricerca
+   */
   document.getElementById("id_search_categoria").addEventListener("change", function() {
     if (this.value == "stato") {
       document.getElementById("div_id_search_stato").style.display = "block"
@@ -71,6 +74,7 @@
     }
   })
 
+  // Oscuramento iniziale dei vari elementi per filtrare gli esami
   document.getElementById("div_id_search_stato").style.display = "none"
   document.getElementById("div_id_search_data_inizio").style.display = "none"
   document.getElementById("div_id_search_data_fine").style.display = "none"

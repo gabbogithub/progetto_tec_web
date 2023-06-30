@@ -7,6 +7,8 @@ from .models import Esame, Medico
 from utenti_custom.models import UtenteCustom
 
 def creazione_utenti_esame():
+    """ Crea un utente, un medico con relativo utente e un esame """
+
     utente_medico = UtenteCustom.objects.create_user(email='prova1@gmail.com', password='prova1', 
                                                         first_name='medico', last_name='di prova')
     medico = Medico.objects.create(utente=utente_medico)
@@ -18,8 +20,13 @@ def creazione_utenti_esame():
     return (utente_normale, esame)
 
 class EsameMetodiTest(TestCase):
+    """ Definisce i test per l'invio di mail agli utenti in relazione all'esame 
+    prenotato """
     
     def test_invio_mail_prenotazione(self):
+        """ Testa che venga mandata una mail di conferma quando un utente prenota 
+        un esame """
+
         utente_normale, esame = creazione_utenti_esame()
         esame.stato = 'prenotato'
         esame.paziente = utente_normale
@@ -33,6 +40,9 @@ class EsameMetodiTest(TestCase):
         self.assertEqual(mail.outbox[0].body, testo_mail)
 
     def test_invio_mail_modifica(self):
+        """ Testa che venga mandata una mail di notifica quando l'esame prenotato 
+        da un utente subisce una modifica """
+
         utente_normale, esame = creazione_utenti_esame()
         esame.stato = 'prenotato'
         esame.paziente = utente_normale
@@ -49,6 +59,9 @@ class EsameMetodiTest(TestCase):
         self.assertEqual(mail.outbox[1].body, testo_mail)
 
     def test_invio_mail_cancellazione(self):
+        """ Testa che venga mandata una mail di notifica quando l'esame prenotato 
+        da un utente viene cancellato """
+
         utente_normale, esame = creazione_utenti_esame()
         esame.stato = 'prenotato'
         esame.paziente = utente_normale

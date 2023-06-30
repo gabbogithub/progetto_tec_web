@@ -11,6 +11,7 @@ from .views import EsameRicercaView
 def crea_utenti_medico():
     """ Funzione che crea due utenti di prova e un medico (usando un terzo utente
       di prova)"""
+    
     utente_prova1 = UtenteCustom.objects.create_user(email='prova1@gmail.com', password='prova1', 
                                                      first_name='utente1', last_name='di prova 1')
     utente_prova2 = UtenteCustom.objects.create_user(email='prova2@gmail.com', password='prova2', 
@@ -21,11 +22,12 @@ def crea_utenti_medico():
     return (utente_prova1, utente_prova2, medico)
 
 class SituazioneUtenteViewTest(TestCase):
+    """ Definisce i test la view 'situazione_utente' """
 
     def test_situazione_utente_non_loggato(self):
-        """Test che controlla se il sito redirezioni verso la pagina di login nel
+        """ Test che controlla se il sito redirezioni verso la pagina di login nel
           caso l'utente non abbia fatto l'accesso con ilsuo account e cerchi di 
-          accedere alla situazione dei suoi esami"""
+          accedere alla situazione dei suoi esami """
         
         client = Client()
         response = client.get(reverse('gestione_utenti:situazione'))
@@ -33,8 +35,8 @@ class SituazioneUtenteViewTest(TestCase):
                              '?auth=notok&next=/gestione_utenti/situazione/')
 
     def test_situazione_utente_con_esami_altrui(self):
-        """Test che verifica che quando sono presenti anche esami di altri utenti 
-        nel database, la pagina personale mostri solo i propri esami"""
+        """ Test che verifica che quando sono presenti anche esami di altri utenti 
+        nel database, la pagina personale mostri solo i propri esami """
 
         utente_prova1, utente_prova2, medico = crea_utenti_medico()
         data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
@@ -52,10 +54,12 @@ class SituazioneUtenteViewTest(TestCase):
 
 
 class RicercaEsamiViewTest(TestCase):  
+    """ Definisce i test la view 'ricerca_esami' """
 
     def test_ricerca_esami_tutti(self):
-        """Test che verifica che quando non sono specificati parametri, vengano 
-        restituiti tutti gli esami"""
+        """ Test che verifica che quando non sono specificati parametri, vengano 
+        restituiti tutti gli esami """
+
         utente_prova1, utente_prova2, medico_1 = crea_utenti_medico()
         data_1 = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
         esame_1 = Esame.objects.create(tipologia='ematochimica', medico=medico_1, 
@@ -73,8 +77,9 @@ class RicercaEsamiViewTest(TestCase):
         self.assertQuerysetEqual(response.context['page_obj'], [esame_1, esame_2])
 
     def test_ricerca_esami_nome(self):
-        """Test che verifica la funzionalita' di ricerca degli esami usando il 
-        nome del medico"""
+        """ Test che verifica la funzionalita' di ricerca degli esami usando il 
+        nome del medico """
+
         utente_prova1, utente_prova2, medico_corretto = crea_utenti_medico()
         data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
         esame_corretto = Esame.objects.create(tipologia='ematochimica', medico=medico_corretto, 
@@ -92,8 +97,9 @@ class RicercaEsamiViewTest(TestCase):
         self.assertQuerysetEqual(response.context['page_obj'], [esame_corretto])
     
     def test_ricerca_esami_cognome(self):
-        """Test che verifica la funzionalita' di ricerca degli esami usando il 
-        cognome del medico"""
+        """ Test che verifica la funzionalita' di ricerca degli esami usando il 
+        cognome del medico """
+
         utente_prova1, utente_prova2, medico_corretto = crea_utenti_medico()
         data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
         esame_corretto = Esame.objects.create(tipologia='ematochimica', medico=medico_corretto, 
@@ -111,8 +117,9 @@ class RicercaEsamiViewTest(TestCase):
         self.assertQuerysetEqual(response.context['page_obj'], [esame_corretto])
 
     def test_ricerca_esami_data_inizio(self):
-        """Test che verifica la funzionalita' di ricerca degli esami a partire 
-        da una certa data"""
+        """ Test che verifica la funzionalita' di ricerca degli esami a partire 
+        da una certa data """
+
         utente_prova1, _, medico = crea_utenti_medico()
         data_1 = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
         data_2 = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(weeks=2)
@@ -136,8 +143,9 @@ class RicercaEsamiViewTest(TestCase):
                                                                 esame_corretto_2])
 
     def test_ricerca_esami_data_fine(self):
-        """Test che verifica la funzionalita' di ricerca degli esami non oltre 
-        una certa data"""
+        """ Test che verifica la funzionalita' di ricerca degli esami non oltre 
+        una certa data """
+
         utente_prova1, _, medico = crea_utenti_medico()
         data_1 = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
         data_2 = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(weeks=2)
@@ -161,7 +169,8 @@ class RicercaEsamiViewTest(TestCase):
                                                                 esame_corretto_2])
 
     def test_ricerca_esami_tra_due_date(self):
-        """Test che verifica la funzionalita' di ricerca degli esami tra due date"""
+        """ Test che verifica la funzionalita' di ricerca degli esami tra due date """
+
         utente_prova1, _, medico = crea_utenti_medico()
         data_1 = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
         data_2 = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(weeks=2)
@@ -185,8 +194,9 @@ class RicercaEsamiViewTest(TestCase):
         self.assertQuerysetEqual(response.context['page_obj'], [esame_corretto])
 
     def test_ricerca_esami_tipologia(self):
-        """Test che verifica la funzionalita' di ricerca degli esami usando la 
-        tipologia dell'esame"""
+        """ Test che verifica la funzionalita' di ricerca degli esami usando la 
+        tipologia dell'esame """
+
         utente_prova1, _, medico = crea_utenti_medico()
         data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
         esame_corretto = Esame.objects.create(tipologia='ematochimica', medico=medico, 
@@ -202,8 +212,8 @@ class RicercaEsamiViewTest(TestCase):
         self.assertQuerysetEqual(response.context['page_obj'], [esame_corretto])
 
     def test_ricerca_esami_con_esami_non_disponibili(self):
-        """Test che verifica che gli esami mostrati durante una ricerca siano 
-        solo quelli disponibili e non anche quelli prenotati, eseguiti o cancellati"""
+        """ Test che verifica che gli esami mostrati durante una ricerca siano 
+        solo quelli disponibili e non anche quelli prenotati, eseguiti o cancellati """
 
         utente_prova1, utente_prova2, medico = crea_utenti_medico()
         data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
@@ -222,8 +232,8 @@ class RicercaEsamiViewTest(TestCase):
         self.assertQuerysetEqual(response.context['page_obj'], [esame_corretto])
 
     def test_ricerca_esami_numero_di_esami_pagina(self):
-        """Test che verifica che venga mostrato il numero corretto di esami in 
-        una pagina"""
+        """ Test che verifica che venga mostrato il numero corretto di esami in 
+        una pagina """
 
         utente_prova1, _, medico = crea_utenti_medico()
         num_pagine = EsameRicercaView.paginate_by
@@ -244,6 +254,9 @@ class RicercaEsamiViewTest(TestCase):
         self.assertQuerysetEqual(response.context['page_obj'], esami[num_pagine:])
 
     def test_ricerca_esami_non_presenti(self):
+        """ Test che verifica non vengano mostrati esami quando non si trova una
+          corrispondenza e che venga mostrato il messaggio corretto all'utente """
+        
         utente_prova1, _, medico = crea_utenti_medico()
         data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
         Esame.objects.create(tipologia='ematochimica', medico=medico, data=data, 
@@ -258,6 +271,10 @@ class RicercaEsamiViewTest(TestCase):
         self.assertContains(response, "Non sono stati trovati esami")
 
     def test_contenuto_esame_corretto(self):
+        """ Test che verifica il contenuto mostrato dalla pagina sia corretto. 
+        In particolare che vengano mostrati tutti i dati dell'esame e un bottone 
+        per prenotarlo """
+        
         utente_prova1, _, medico = crea_utenti_medico()
         data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(days=1)
         esame = Esame.objects.create(tipologia='ematochimica', medico=medico, data=data, 
@@ -272,6 +289,8 @@ class RicercaEsamiViewTest(TestCase):
         self.assertContains(response, esame.tipologia)
         self.assertContains(response, esame.medico.__str__())
         self.assertContains(response, esame.stato)
+        
+        # bisogna tradurre il giorno e il mese
         locale.setlocale(locale.LC_TIME, 'it_IT') 
         giorno = esame.data.strftime('%A').capitalize()
         mese = esame.data.strftime('%B').capitalize()

@@ -1,8 +1,5 @@
 from django.db import models
 from django.conf import settings
-from datetime import datetime, timezone
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from dirtyfields import DirtyFieldsMixin
 from django.core.mail import send_mail
 from django.conf import settings
@@ -10,15 +7,19 @@ from django.contrib.auth.models import Group
 from utenti_custom.models import UtenteCustom
 
 class Medico(models.Model):
-    utente = models.OneToOneField(UtenteCustom, on_delete=models.CASCADE, related_name='medico')
+    """ Definisce il modello del medico """
+    
+    utente = models.OneToOneField(UtenteCustom, on_delete=models.CASCADE, 
+                                  related_name='medico')
     descrizione = models.TextField(blank=True, null=True)
 
     class Meta:
-        """Placeholder"""
-
         verbose_name_plural = 'Medici'
 
     def save(self, *args, **kwargs):
+        """ Override del metodo save per aggiungere automaticamente l'utente 
+        associato al medico, al gruppo 'Medici' """
+
         if self._state.adding:
             gruppo = Group.objects.get(name="Medici")
             gruppo.user_set.add(self.utente)
@@ -26,10 +27,13 @@ class Medico(models.Model):
         return super().save(*args, **kwargs)
     
     def __str__(self):
+        """ Rappresentazione come stringa del medico che segue la rappresentazione
+          nel modello dell'utente """
+        
         return self.utente.__str__()
     
 class Esame(DirtyFieldsMixin, models.Model):
-    """Classe che rappresenta il modello per gli esami medici"""
+    """ Definisce il modello per gli esami medici"""
 
     TIPOLOGIE_POSSIBILI = [
         ('ematochimica', 'Ematochimica'),
@@ -41,7 +45,7 @@ class Esame(DirtyFieldsMixin, models.Model):
         ('risonanza_magnetica', 'Risonanza magnetica'),
         ('cardiologia', 'Cardiologia'),
         ('allergologia', 'Allergologia'),
-        ('gastroenterologia', 'gastroenterologia'),
+        ('gastroenterologia', 'Gastroenterologia'),
         ('urologia', 'Urologia'),
         ('psichiatria', 'Psichiatria'),
         ('pediatria', 'Pediatria'),
@@ -67,7 +71,10 @@ class Esame(DirtyFieldsMixin, models.Model):
                                on_delete=models.SET_NULL)
     
     def save(self, *args, **kwargs):
-        '''Prima caso di esame prenotato, poi modifica generica e infine cancellazione'''
+        """ Override del metodo save per fare in modo che venga mandata una mail 
+        al paziente associato all'esame dopo la prenotazione, se il medico cambia 
+        delle informazioni dell'esame o se il medico lo cancella """
+
         manda_mail = False
         dirty_fields = self.get_dirty_fields(check_relationship=True)
 
@@ -78,9 +85,11 @@ class Esame(DirtyFieldsMixin, models.Model):
 
         try:
             if manda_mail:
-                if self.paziente is not None and self.stato == 'prenotato' and dirty_fields.get('stato', None) == 'disponibile':
-                    testo_mail = (f"Gentile utente, l'esame che si svolgera' in data {self.data.strftime('%d-%m-%Y')}" 
-                                  f" alle ore {self.data.strftime('%H:%M:%S')} e' stato prenotato")
+                if (self.paziente is not None and self.stato == 'prenotato' and
+                dirty_fields.get('stato', None) == 'disponibile'):
+                    testo_mail = (f"Gentile utente, l'esame che si svolgera' in"
+                                  f" data {self.data.strftime('%d-%m-%Y')} alle" 
+                                  f" ore {self.data.strftime('%H:%M:%S')} e' stato prenotato")
                     send_mail(
                     "Notifica prenotazione esame",
                     testo_mail,
@@ -90,8 +99,9 @@ class Esame(DirtyFieldsMixin, models.Model):
                     )
 
                 elif self.paziente is not None:
-                    testo_mail = (f"Gentile utente, l'esame prenotato per la data {self.data.strftime('%d-%m-%Y')}" 
-                                  f" alle ore {self.data.strftime('%H:%M:%S')} e' stato modificato")
+                    testo_mail = (f"Gentile utente, l'esame prenotato per la data"
+                                  f" {self.data.strftime('%d-%m-%Y')} alle ore" 
+                                  f" {self.data.strftime('%H:%M:%S')} e' stato modificato")
                     send_mail(
                     "Notifica modifica esame",
                     testo_mail,
@@ -102,9 +112,10 @@ class Esame(DirtyFieldsMixin, models.Model):
 
                 elif dirty_fields['paziente'] is not None:
                     paziente = UtenteCustom.objects.get(pk=dirty_fields['paziente'])
-                    testo_mail = (f"Gentile utente, la cancellazione della prenotazione per l'esame che si svolgera' in data" 
-                                  f" {self.data.strftime('%d-%m-%Y')} alle ore {self.data.strftime('%H:%M:%S')} e'" 
-                                  f" stata effettuata")
+                    testo_mail = (f"Gentile utente, la cancellazione della prenotazione"
+                                  f" per l'esame che si svolgera' in data" 
+                                  f" {self.data.strftime('%d-%m-%Y')} alle ore" 
+                                  f" {self.data.strftime('%H:%M:%S')} e'stata effettuata")
                     send_mail(
                     "Notifica cancellazione esame",
                     testo_mail,
@@ -114,11 +125,12 @@ class Esame(DirtyFieldsMixin, models.Model):
                     )
             super().save(*args, **kwargs)
         except Exception as ex:
-            print(f"Errore causato dall'eccezione del tipo {type(ex)}")
+            print(f"Errore causato da un'eccezione del tipo {type(ex)}")
     
     def __str__(self):
-        '''Metodo per stampare tutti i campi dell'esame come una frase coerente'''
+        """ Metodo per stampare tutti i campi dell'esame come una frase coerente """
         
+        tipologia = self.get_tipologia_display()
         verbo_corretto = "verra'"
         paziente = "nessuno" if self.paziente is None else self.paziente
         frase_finale = f"ed e' stato prenotato da {paziente}"
@@ -129,32 +141,27 @@ class Esame(DirtyFieldsMixin, models.Model):
             verbo_corretto = 'che doveva essere'
             frase_finale = "e' stato cancellato"
         
-        return (f"L'esame della tipologia {self.tipologia} {verbo_corretto} eseguito dal medico {self.medico} "
-                f"in data {self.data.strftime('%d-%m-%Y')} alle ore {self.data.strftime('%H:%M:%S')} {frase_finale}")
-
-        '''
-        if self.stato == 'cancellato':
-            return (f"L'esame che doveva essere eseguito dal medico {self.medico}"
-                    f"in data {self.data.strftime('%d-%m-%Y')} alle ore {self.data.strftime('%H:%M:%S')} è stato cancellato")
-        else:
-            return (f"L'esame della tipologia {self.tipologia} {verbo_corretto} eseguito dal medico {self.medico} "
-                    f"in data {self.data.strftime('%d-%m-%Y')} alle ore {self.data.strftime('%H:%M:%S')}"
-                    f" ed e' stato prenotato da {paziente}")
-        '''
-        
+        return (f"L'esame della tipologia {tipologia} {verbo_corretto} eseguito"
+                f" dal medico {self.medico} in data {self.data.strftime('%d-%m-%Y')}" 
+                f"alle ore {self.data.strftime('%H:%M:%S')} {frase_finale}")
+    
     def get_nome_medico(self):
+        """ Restituisce il nome dell'utente associato al medico """
+
         return self.medico.utente.first_name
     
     def get_cognome_medico(self):
+        """ Restituisce il cognome dell'utente associato al medico """
+
         return self.medico.utente.last_name
     
     class Meta:
-        """Classe che ha lo scopo di specificare il nome plurale per il modello 'Esame'"""
-
         verbose_name_plural = 'Esami'
         ordering = ['data']
 
 class Commento(models.Model):
+    """ Definisce il modello per i commenti ai medici """
+
     medico = models.ForeignKey(Medico, related_name='commenti', on_delete=models.CASCADE)
     commentatore = models.ForeignKey(UtenteCustom, related_name='commenti', on_delete=models.CASCADE)
     testo = models.TextField(max_length=150)

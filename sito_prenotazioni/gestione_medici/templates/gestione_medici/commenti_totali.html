@@ -7,10 +7,12 @@
 <br>
 
 
-  <div class="container">
-    <h2 class="display-5 text-center">Numero di commenti riguardo <a href={% url 'gestione_medici:informazioni_medico' 
-      view.kwargs.pk %}>{{medico}}</a>in questa pagina: {{ object_list.count }} </h2>
-  </div>
+<div class="mt-4 p-5 bg-success text-white rounded">
+  <h2 style="text-align:center;" class="display-6">Numero di commenti riguardo 
+    <a style="color: #90ee90" href={% url 'gestione_medici:informazioni_medico' view.kwargs.pk %}>{{medico}}</a> 
+    in questa pagina: {{ object_list.count }} 
+  </h2>
+</div>
 
 
 <br>
@@ -19,15 +21,17 @@
 {% for c in object_list %}
 <br>
 <div class="d-flex aligns-items-center justify-content-center card text-center w-50 mx-auto">
-    <div class="media border" style="background-color: #E0E0E0;">
+    <div class="d-flex flex-row border p-3" style="background-color: #8db600;">
         <div class="mr-3 mt-3" >
           {% if c.commentatore.foto_profilo%}
-            <img src={{c.commentatore.foto_profilo.url}} class="media-object" style="width:60px">
+            <img src={{c.commentatore.foto_profilo.url}} class="media-object" class="flex-shrink-0 me-3 mt-3 " 
+            style="width:60px; height: 60px;">
           {% else %}
-            <img src="{% static '/immagini/blank_profile_picture.png' %}" class="media-object" style="width:60px">
+            <img src="{% static '/immagini/blank_profile_picture.png' %}" class="flex-shrink-0 me-3 mt-3 " 
+            style="width:60px; height: 60px;">
           {% endif %}
         </div>
-        <div class="media-body" style="word-break: break-all">
+        <div style="word-break: break-all">
           <h4><b>{{c.commentatore}}</b> <small><i>Pubblicato in data {{c.data}}</i></small></h4>
           <p>{{c.testo}}</p>
         </div>

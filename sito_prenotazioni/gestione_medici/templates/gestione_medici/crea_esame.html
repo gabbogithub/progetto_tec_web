@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %} {{view.title}}{% endblock %}
+{% block title %} {{view.title}} {% endblock %}
 {% load crispy_forms_tags %}
 
 {% block content%}
 
-<div class="mt-4 p-5 bg-warning text-white rounded">
-  <div class="container">
-    <h2 style="text-align:center;" class="display-4">{{view.title}}</h2>
-  </div>
+<div class="mt-4 p-5 bg-success text-white rounded">
+    <h2 style="text-align:center;" class="display-4">Crea un nuovo esame</h2>
+    <h3 style="text-align:center;" class="display-6">Si prega di compilare i campi necessari</h3>
 </div>
 <br>
 

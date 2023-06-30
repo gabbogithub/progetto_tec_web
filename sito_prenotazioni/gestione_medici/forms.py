@@ -7,11 +7,12 @@ from django.forms.widgets import *
 from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 from .models import *
 
-class CreateMedicoForm(UserCreationForm):
-    '''Classe che definisce il form per la registrazione dei medici'''
+class CreaMedicoForm(UserCreationForm):
+    """ Definisce il form per la registrazione dei medici """
 
     def save(self, commit=True):
-        '''Override del metodo save per aggiungere i permessi associati ad un utente medico oltre ad aggiungerlo al database'''
+        """ Override del metodo save per aggiungere i permessi associati ad un 
+        utente medico oltre ad aggiungerlo al database """
 
         user = super().save(commit)
         g = Group.objects.get(name="Medici")
@@ -19,19 +20,26 @@ class CreateMedicoForm(UserCreationForm):
         return user 
 
 class FiltraEsameForm(forms.Form):
+    """ Definisce il form per filtrare gli esami """
+
     helper = FormHelper()
     helper.form_id = 'cerca_esame_crispy_form'
     helper.form_method = 'GET'
     helper.add_input(Submit("submit","Filtra Esami"))
+    # aggiunta di una categoria vuota nel caso l'utente non voglia filtrare esami
     categorie = [('', '--------'), ('stato', 'Stato'), ('data', 'Data')]
     search_categoria = forms.ChoiceField(label="Come vuoi filtrare?", choices=categorie, 
                                          required=False)
-    search_stato = forms.ChoiceField(label='Quale stato?', choices=Esame.STATI_POSSIBILI, required=False)
-    search_data_inizio = forms.DateTimeField(label="Da quando?", required=False, widget=DateTimePickerInput())
+    search_stato = forms.ChoiceField(label='Quale stato?', choices=Esame.STATI_POSSIBILI, 
+                                     required=False)
+    search_data_inizio = forms.DateTimeField(label="Da quando?", required=False, 
+                                             widget=DateTimePickerInput())
     search_data_fine = forms.DateTimeField(label="Fino a quando?", required=False, 
                                            widget=DateTimePickerInput(range_from='search_data_inizio'))
 
-class CreateEsameForm(forms.ModelForm):
+class CreaEsameForm(forms.ModelForm):
+    """ Definisce il form per la creazione di un nuovo esame """
+
     helper = FormHelper()
     helper.form_id = "add_esame_crispy_form"
     helper.form_method = "POST"
@@ -45,6 +53,8 @@ class CreateEsameForm(forms.ModelForm):
         }
     
 class ModificaEsameForm(forms.ModelForm):
+    """ Definisce il form per la modifica di un esame """
+
     helper = FormHelper()
     helper.form_id = "modifica_esame_crispy_form"
     helper.form_method = "POST"
@@ -58,6 +68,8 @@ class ModificaEsameForm(forms.ModelForm):
         }
 
 class CreaCommentoForm(forms.ModelForm):
+    """ Definisce il form per la creazione di un nuovo commento """
+
     helper = FormHelper()
     helper.form_id = "crea_commento_crispy_form"
     helper.form_method = "POST"

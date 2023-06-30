@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %} Lista degli esami{% endblock %} 
+{% block title %} {{view.title}} {% endblock %} 
 
 {% block content %} 
-<br>
 {% if object_list.count == 0 %}
-  <h2 style="text-align:center"> Non sono stati trovati esami</h2>
+  <div class="mt-4 p-5 bg-info text-white rounded">
+    <h2 style="text-align:center;" class="display-6"> Non sono stati trovati esami</h2>
+  </div>
 {% else %}
-  <h2 style="text-align:center"> {{ view.titolo }} {{ object_list.count }} esami </h2>
+  <div class="mt-4 p-5 bg-info text-white rounded">
+    <h2 style="text-align:center;" class="display-6"> La tua ricerca ha dato come risultato {{ object_list.count }} esami </h2>
+  </div>
 {% endif %}
 <br>
 
@@ -15,24 +18,23 @@
 {% for e in object_list %}
 <br>
 <div class="d-flex aligns-items-center justify-content-center card text-center w-50 mx-auto">
-<div class="card text-center">
-  <div class="card-header">
-    Esame disponibile per la prenotazione
-  </div>
-  <div class="card-body">
-    <h5 class="card-title">Esame della tipologia {{ e.tipologia }}</h5>
-    <p class="card-text">Un esame di <a href={% url 'gestione_medici:informazioni_medico' e.medico.pk %}>
-      {{ e.get_nome_medico }} {{e.get_cognome_medico}}</a> che verrà eseguito in data {{e.data}}</p> 
+  <div class="card text-center">
+    <div class="card-header">
+      Esame disponibile per la prenotazione
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Esame della tipologia {{ e.get_tipologia_display }}</h5>
+      <p class="card-text">Un esame di <a href={% url 'gestione_medici:informazioni_medico' e.medico.pk %}>
+        {{ e.get_nome_medico }} {{e.get_cognome_medico}}</a> che verrà eseguito in data {{e.data}}</p> 
 
+    </div>
+    <div class="card-footer">
+      <a href={% url 'gestione_utenti:prenota_esame' e.pk %} class="btn btn-info">Prenotalo</a>
+    </div>
   </div>
-  <div class="card-footer">
-    <a href={% url 'gestione_utenti:prenota_esame' e.pk %} class="btn btn-info">Prenotalo</a>
-  </div>
-</div>
 </div>
 <br>
 {%endfor%}
-</div>
 <br>
 
 {% include "paginatore.html" %}
