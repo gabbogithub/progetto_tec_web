@@ -45,10 +45,14 @@
 
   <div class="container-fluid">
     <div class="mt-4 p-5 bg-success text-white rounded">
-    <h3>Ci sono {{page_obj.paginator.count}} commenti, per vederli tutti clicca 
-      <a style="color: #90ee90" href={% url 'gestione_medici:commenti_totali' view.kwargs.pk %}>qui</a>
-      , di seguito i piu' recenti:
-    </h3>
+      {% if lunghezza_commenti <= 0 %}
+        <h3>Non ci sono ancora commenti riguardo a questo medico</h3>
+      {% else %}
+        <h3>Ci sono {{lunghezza_commenti}} commenti, per vederli tutti clicca 
+          <a style="color: #90ee90" href={% url 'gestione_medici:commenti_totali' view.kwargs.pk %}>qui</a>
+          , di seguito i piu' recenti:
+        </h3>
+      {% endif %}
     </div>
     <br>
     {% for commento in commenti %}

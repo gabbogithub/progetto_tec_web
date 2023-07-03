@@ -47,6 +47,7 @@ class UtenteCustom(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     foto_profilo = models.ImageField(upload_to ='immagini_utenti/%Y/%m/%d/', blank=True, null=True)
 
+    # campo che specifica l'identificatore unico da usare per il login
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name',]
 

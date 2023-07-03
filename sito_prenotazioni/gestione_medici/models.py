@@ -86,7 +86,7 @@ class Esame(DirtyFieldsMixin, models.Model):
         try:
             if manda_mail:
                 if (self.paziente is not None and self.stato == 'prenotato' and
-                dirty_fields.get('stato', None) == 'disponibile'):
+                dirty_fields.get('stato') == 'disponibile'):
                     testo_mail = (f"Gentile utente, l'esame che si svolgera' in"
                                   f" data {self.data.strftime('%d-%m-%Y')} alle" 
                                   f" ore {self.data.strftime('%H:%M:%S')} e' stato prenotato")
@@ -115,7 +115,7 @@ class Esame(DirtyFieldsMixin, models.Model):
                     testo_mail = (f"Gentile utente, la cancellazione della prenotazione"
                                   f" per l'esame che si svolgera' in data" 
                                   f" {self.data.strftime('%d-%m-%Y')} alle ore" 
-                                  f" {self.data.strftime('%H:%M:%S')} e'stata effettuata")
+                                  f" {self.data.strftime('%H:%M:%S')} e' stata effettuata")
                     send_mail(
                     "Notifica cancellazione esame",
                     testo_mail,
@@ -143,7 +143,7 @@ class Esame(DirtyFieldsMixin, models.Model):
         
         return (f"L'esame della tipologia {tipologia} {verbo_corretto} eseguito"
                 f" dal medico {self.medico} in data {self.data.strftime('%d-%m-%Y')}" 
-                f"alle ore {self.data.strftime('%H:%M:%S')} {frase_finale}")
+                f" alle ore {self.data.strftime('%H:%M:%S')} {frase_finale}")
     
     def get_nome_medico(self):
         """ Restituisce il nome dell'utente associato al medico """

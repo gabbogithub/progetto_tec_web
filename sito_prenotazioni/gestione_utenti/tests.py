@@ -286,7 +286,7 @@ class RicercaEsamiViewTest(TestCase):
                                               'data_inizio':'None', 'data_fine':'None'}))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(response.context['page_obj'], [esame])
-        self.assertContains(response, esame.tipologia)
+        self.assertContains(response, esame.get_tipologia_display())
         self.assertContains(response, esame.medico.__str__())
         self.assertContains(response, esame.stato)
         

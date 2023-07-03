@@ -5,6 +5,12 @@ from django.views.generic import ListView
 from braces.views import GroupRequiredMixin
 from .models import Chat
 
+def ha_gruppo_assistenza(user):
+    """ Verifica che l'utente passato come argomento faccia parte del gruppo 
+    'Assistenza' """
+
+    return user.groups.filter(name='Assistenza').exists()
+
 
 def richiesta_assistenza(request):
     """ Implementa la pagina di richiesta di assistenza che nel caso l'utente 
@@ -34,12 +40,14 @@ def chat_assistenza(request, identificativi, pk):
     poi impostando lo stato della chat corretto """
 
     chat = Chat.objects.get(pk=pk)
+    stati_rifiuto = ('in_corso', 'terminato')
 
-    if chat.stato == 'in_corso' or chat.stato == 'terminato' or (chat.stato == 'in_attesa' and not request.user.is_staff):
+    if chat.stato in stati_rifiuto or (chat.stato == 'in_attesa' and 
+                                       not ha_gruppo_assistenza(request.user)):
         messages.error(request, 'Non puoi entrare in questa chat')
         return redirect('home')
 
-    if request.user.is_staff:
+    if ha_gruppo_assistenza(request.user):
         chat.membro_assistenza = request.user
         chat.stato = 'in_corso'
         chat.save()

@@ -7,18 +7,6 @@ from django.forms.widgets import *
 from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 from .models import *
 
-class CreaMedicoForm(UserCreationForm):
-    """ Definisce il form per la registrazione dei medici """
-
-    def save(self, commit=True):
-        """ Override del metodo save per aggiungere i permessi associati ad un 
-        utente medico oltre ad aggiungerlo al database """
-
-        user = super().save(commit)
-        g = Group.objects.get(name="Medici")
-        g.user_set.add(user)
-        return user 
-
 class FiltraEsameForm(forms.Form):
     """ Definisce il form per filtrare gli esami """
 

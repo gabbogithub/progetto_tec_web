@@ -122,7 +122,9 @@ class InformazioniMedicoView(DetailView):
 
         context = super().get_context_data(**kwargs)
         commenti_totali = context['medico'].commenti.all()
+        lunghezza_commenti = len(commenti_totali)
         context['commenti'] = commenti_totali[:3]
+        context['lunghezza_commenti'] = lunghezza_commenti
         return context
 
 class CommentiMedicoView(ListView):

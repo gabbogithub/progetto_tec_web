@@ -31,8 +31,10 @@
           <div class="btn-wrapper text-center d-flex justify-content-between">
             <a href="{% url 'gestione_utenti:stampa_esame' e.pk %}" 
             class="btn btn-secondary  btn-sm text-white d-flex align-items-center">Stampa promemoria come pdf</a>
-            <a href="{% url 'gestione_utenti:cancella_prenotazione' e.pk %}" 
-            class="btn btn-warning" style="">Cancella</a>
+            {% if e.stato == 'prenotato' %}
+              <a href="{% url 'gestione_utenti:cancella_prenotazione' e.pk %}" 
+              class="btn btn-warning" style="">Cancella</a>
+            {% endif %}
           </div>
         </div>
     </div>
