@@ -17,25 +17,23 @@
 
 <br>
 
-
+<div class="container-fluid">
 {% for c in object_list %}
 <br>
-<div class="d-flex aligns-items-center justify-content-center card text-center w-50 mx-auto">
-    <div class="d-flex flex-row border p-3" style="background-color: #8db600;">
-        <div class="mr-3 mt-3" >
-          {% if c.commentatore.foto_profilo%}
-            <img src={{c.commentatore.foto_profilo.url}} class="media-object" class="flex-shrink-0 me-3 mt-3 " 
-            style="width:60px; height: 60px;">
-          {% else %}
-            <img src="{% static '/immagini/blank_profile_picture.png' %}" class="flex-shrink-0 me-3 mt-3 " 
-            style="width:60px; height: 60px;">
-          {% endif %}
-        </div>
-        <div style="word-break: break-all">
-          <h4><b>{{c.commentatore}}</b> <small><i>Pubblicato in data {{c.data}}</i></small></h4>
-          <p>{{c.testo}}</p>
-        </div>
+<div class="card mb-4">
+  <div class="card-body" style="background-color: #8db600">
+    <h3>{{c.testo}}</h3>
+    <div class="d-flex flex-row align-items-center" >
+      {% if c.commentatore.foto_profilo%}
+        <img src={{c.commentatore.foto_profilo.url}} class="flex-shrink-0 me-3 mt-3 " 
+        width="50" height="50">
+      {% else %}
+        <img src="{% static '/immagini/blank_profile_picture.png' %}" class="flex-shrink-0 me-3 mt-3 "
+        width="50" height="50">
+      {% endif %}
+      <h4><b>{{c.commentatore}}</b> <small><i>Pubblicato in data {{c.data}}</i></small></h4>
     </div>
+  </div>
 </div>
 <br>
 {%endfor%}

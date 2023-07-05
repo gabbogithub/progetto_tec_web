@@ -3,8 +3,12 @@
 {% block title %} {{view.titolo}}{% endblock %} 
 
 {% block content %} 
-<br>
-<h2 style="text-align:center"> {{ view.titolo }} {{page_obj.paginator.count}} persone totali in attesa, {{object_list.count}} in questa pagina </h2>
+<div class="mt-4 p-5 bg-warning text-white rounded">
+  <h2 style="text-align:center" class="display-6"> {{ view.titolo }} {{page_obj.paginator.count}} 
+    persone totali in attesa, {{object_list.count}} in questa pagina 
+  </h2>
+</div>
+
 <br>
 
 

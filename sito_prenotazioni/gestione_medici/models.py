@@ -125,7 +125,7 @@ class Esame(DirtyFieldsMixin, models.Model):
                     )
             super().save(*args, **kwargs)
         except Exception as ex:
-            print(f"Errore causato da un'eccezione del tipo {type(ex)}")
+            print(f"Errore causato da {ex}, un'eccezione del tipo {type(ex)}")
     
     def __str__(self):
         """ Metodo per stampare tutti i campi dell'esame come una frase coerente """

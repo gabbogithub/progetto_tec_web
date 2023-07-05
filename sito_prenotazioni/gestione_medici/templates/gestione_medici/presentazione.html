@@ -23,7 +23,11 @@
         Presentazione di {{object}}:
       </div>
       <div class="card-body">
-        <p class="card-text">{{object.descrizione}}</p>
+        {% if object.descrizione is None %}
+          <p class="card-text">Non e' presente una descrizione</p>
+        {% else %}
+          <p class="card-text">{{object.descrizione}}</p>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -56,19 +60,19 @@
     </div>
     <br>
     {% for commento in commenti %}
-    <div class="d-flex flex-row border p-3" style="background-color: #8db600">
-      <div class="mr-3 mt-3" >
-        {% if commento.commentatore.foto_profilo%}
-          <img src={{commento.commentatore.foto_profilo.url}} class="flex-shrink-0 me-3 mt-3 " 
-          style="width:60px; height: 60px;">
-        {% else %}
-          <img src="{% static '/immagini/blank_profile_picture.png' %}" class="flex-shrink-0 me-3 mt-3 "
-           style="width:60px; height: 60px;">
-        {% endif %}
-      </div>
-      <div style="word-break: break-all">
-        <h4><b>{{commento.commentatore}}</b> <small><i>Pubblicato in data {{commento.data}}</i></small></h4>
-        <p>{{commento.testo}}</p>
+    <div class="card mb-4">
+      <div class="card-body" style="background-color: #8db600">
+        <h3>{{commento.testo}}</h3>
+        <div class="d-flex flex-row align-items-center" >
+          {% if commento.commentatore.foto_profilo%}
+            <img src={{commento.commentatore.foto_profilo.url}} class="flex-shrink-0 me-3 mt-3 " 
+            width="50" height="50">
+          {% else %}
+            <img src="{% static '/immagini/blank_profile_picture.png' %}" class="flex-shrink-0 me-3 mt-3 "
+            width="50" height="50">
+          {% endif %}
+          <h4><b>{{commento.commentatore}}</b> <small><i>Pubblicato in data {{commento.data}}</i></small></h4>
+        </div>
       </div>
     </div>
     <br>

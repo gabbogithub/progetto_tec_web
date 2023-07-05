@@ -11,7 +11,7 @@ class Chat(models.Model):
         ('terminato', 'Terminato')
     ]
 
-    stato = stato = models.CharField(max_length=10, choices=STATI_POSSIBILI, 
+    stato = models.CharField(max_length=10, choices=STATI_POSSIBILI, 
                                      default='creato')
     membro_assistenza = models.ForeignKey(UtenteCustom, related_name='chat', 
                                           null=True, blank=True, on_delete=models.CASCADE)

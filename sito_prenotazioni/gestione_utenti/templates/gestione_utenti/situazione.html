@@ -21,9 +21,11 @@
       </div>
       <div class="card-body">
         {% if e.stato == 'prenotato' %}
-            <p class="card-text"> Esame che verrà eseguito in data {{e.data}}</p>
+          <p class="card-text"> Esame che verrà eseguito in data {{e.data}}</p>
+        {% elif e.stato == 'eseguito' %}
+          <p class="card-text"> Esame eseguito in data {{e.data}}</p>
         {% else %}
-            <p class="card-text"> Esame eseguito in data {{e.data}}</p>
+        <p class="card-text"> Esame che doveva essere eseguito in data {{e.data}}</p>
         {% endif %}
             <p class="card-text"> dal medico {{e.get_nome_medico}} {{e.get_cognome_medico}}</p>
       </div>

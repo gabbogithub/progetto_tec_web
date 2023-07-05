@@ -19,7 +19,7 @@
       <br>
       <div class="card text-center w-75">
         <div class="card-header">
-          Esame della tipologia {{ e.tipologia }}
+          Esame della tipologia {{ e.get_tipologia_display }}
         </div>
         <div class="card-body">
           {% if e.stato == 'prenotato' or e.stato == 'disponibile' %}

@@ -90,27 +90,29 @@ function aggiungiMessaggio(data){
   var dataMsg = sanitizeString(data["msg"]);
   var dataIden = sanitizeString(data["iden"])
 
-  var chatMsg = document.createElement("div");
+  var card = document.createElement("div");
+  card.className = "card mb-4"
+  var cardBody = document.createElement("div")
+  cardBody.className = "card-body"
+  cardBody.innerHTML = "<h4>" + dataMsg + "</h4>"
+  var innerDiv = document.createElement("div");
   if (dataIden == identificativi)
-    chatMsg.className = "d-flex flex-row-reverse border p-3";
+    innerDiv.className = "d-flex flex-row-reverse align-items-center";
   else
-    chatMsg.className = "d-flex flex-row border p-3";
+    innerDiv.className = "d-flex flex-row align-items-center";
   var img = document.createElement("img");
   img.src = sanitizeString(data["fotoProfilo"])
   img.alt = "foto_utente"
   img.className = "flex-shrink-0 me-3 mt-3 rounded-circle"
   img.style.cssText = "width: 50px; height: 50px;"
-  var innerDiv = document.createElement("div");
 
   var ts = new Date();
-  innerDiv.innerHTML =    "<h4>" + "<b>" + dataIden + "</b>" + " <small><i>" + 
-                              ts.getHours() + ":" + ts.getMinutes() + ":" + ts.getSeconds() + " </i></small></h4>" + 
-                              "<p>" + dataMsg + "</p>";
-  innerDiv.style.cssText = "word-break: break-all"
-
-  chatMsg.appendChild(img);
-  chatMsg.appendChild(innerDiv);
-  container.appendChild(chatMsg);
+  innerDiv.innerHTML = "<h4>" + "<b>" + dataIden + "</b>" + " <small><i>" + 
+                        ts.getHours() + ":" + ts.getMinutes() + ":" + ts.getSeconds() + " </i></small></h4>";
+  innerDiv.insertBefore(img, innerDiv.firstChild)
+  cardBody.appendChild(innerDiv);
+  card.appendChild(cardBody);
+  container.appendChild(card);
   innerDiv.scrollIntoView();
 }
 
@@ -136,7 +138,8 @@ socket.onmessage = function(event){
 
 // funzione che invio all'indirizzo del websocket l'utente messaggio scritto come JSON
 function btnClick() {
-
+    if (document.querySelector('#msg').value == "")
+      return
     var obj = new Object();
     obj.msg = sanitizeString(document.querySelector('#msg').value);
     obj.iden = sanitizeString(identificativi);

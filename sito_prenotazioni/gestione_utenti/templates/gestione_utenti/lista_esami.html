@@ -3,13 +3,15 @@
 {% block title %} {{view.title}} {% endblock %} 
 
 {% block content %} 
-{% if object_list.count == 0 %}
+{% if paginator.count == 0 %}
   <div class="mt-4 p-5 bg-info text-white rounded">
     <h2 style="text-align:center;" class="display-6"> Non sono stati trovati esami</h2>
   </div>
 {% else %}
   <div class="mt-4 p-5 bg-info text-white rounded">
-    <h2 style="text-align:center;" class="display-6"> La tua ricerca ha dato come risultato {{ object_list.count }} esami </h2>
+    <h2 style="text-align:center;" class="display-6"> La tua ricerca ha dato come risultato 
+      {{ paginator.count }} esami 
+    </h2>
   </div>
 {% endif %}
 <br>
