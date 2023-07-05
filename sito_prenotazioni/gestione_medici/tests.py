@@ -47,15 +47,15 @@ class EsameMetodiTest(TestCase):
         esame.stato = 'prenotato'
         esame.paziente = utente_normale
         esame.save()
-        nuova_data = datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(weeks=1)
-        esame.data = nuova_data
+        vecchia_data = esame.data
+        esame.data =  datetime.now(tz=ZoneInfo("Europe/Rome")) + timedelta(weeks=1)
         esame.save()
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(mail.outbox[1].subject, "Notifica modifica esame")
         self.assertEqual(mail.outbox[1].from_email, settings.EMAIL_HOST_USER)
         self.assertEqual(mail.outbox[1].to, [utente_normale.email])
-        testo_mail = (f"Gentile utente, l'esame prenotato per la data {esame.data.strftime('%d-%m-%Y')}" 
-                                  f" alle ore {esame.data.strftime('%H:%M:%S')} e' stato modificato")
+        testo_mail = (f"Gentile utente, l'esame prenotato per la data {vecchia_data.strftime('%d-%m-%Y')}" 
+                                  f" alle ore {vecchia_data.strftime('%H:%M:%S')} e' stato modificato")
         self.assertEqual(mail.outbox[1].body, testo_mail)
 
     def test_invio_mail_cancellazione(self):
