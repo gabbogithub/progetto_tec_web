@@ -99,9 +99,12 @@ class Esame(DirtyFieldsMixin, models.Model):
                     )
 
                 elif self.paziente is not None:
+                    data = self.data
+                    if dirty_fields.get('data') is not None:
+                        data = dirty_fields['data']
                     testo_mail = (f"Gentile utente, l'esame prenotato per la data"
-                                  f" {self.data.strftime('%d-%m-%Y')} alle ore" 
-                                  f" {self.data.strftime('%H:%M:%S')} e' stato modificato")
+                                  f" {data.strftime('%d-%m-%Y')} alle ore" 
+                                  f" {data.strftime('%H:%M:%S')} e' stato modificato")
                     send_mail(
                     "Notifica modifica esame",
                     testo_mail,
@@ -110,7 +113,7 @@ class Esame(DirtyFieldsMixin, models.Model):
                     fail_silently=False,
                     )
 
-                elif dirty_fields['paziente'] is not None:
+                elif dirty_fields.get('paziente') is not None:
                     paziente = UtenteCustom.objects.get(pk=dirty_fields['paziente'])
                     testo_mail = (f"Gentile utente, la cancellazione della prenotazione"
                                   f" per l'esame che si svolgera' in data" 
