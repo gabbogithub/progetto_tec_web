@@ -68,7 +68,9 @@ def cancella_prenotazione(request, pk):
         messages.error("Non sei stato tu a prenotare questa visita!")
         return redirect(request,'gestione_utenti:situazione')
     
-    if e.data > datetime.now(tz=ZoneInfo("Europe/Rome")):
+    # bisogna estrarre la data perche' altrimenti anche se venisse cancellato
+    # lo stesso giorno, ritornerebbe disponibile
+    if datetime.date(e.data) > datetime.date(datetime.now(tz=ZoneInfo("Europe/Rome"))):
         e.stato = 'disponibile'
         e.paziente = None
     else:

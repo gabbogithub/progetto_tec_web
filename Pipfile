@@ -11,9 +11,9 @@ crispy-bootstrap5 = "*"
 django-bootstrap-datepicker-plus = "*"
 xhtml2pdf = "*"
 django-dirtyfields = "*"
-django-channels = "*"
-daphne = "*"
 django-braces = "*"
+channels = "*"
+daphne = "*"
 
 [dev-packages]
 
