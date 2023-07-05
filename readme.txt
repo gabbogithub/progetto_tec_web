@@ -1,14 +1,13 @@
 LIBRERIE NECESSARIE:
 
-Per poter utilizzare il progetto sono necessari una serie di pacchetti che indicherò di
-seguito ma nella cartella è presente anche un pipfile che può agevolare l'operazione.
-Le versioni di molti pacchetti sono parecchio recenti perché hanno subito aggiornamenti
+Per poter utilizzare il progetto sono necessari una serie di pacchetti che indichero' di
+seguito ma nella cartella e' presente anche un pipfile che puo' agevolare l'operazione.
+Le versioni di molti pacchetti sono parecchio recenti perche' hanno subito aggiornamenti
 mentre sviluppavo il progetto o poco prima della consegna del progetto ma non vi 
-preoccupate perché ho testato che tutto funzionasse anche con le librerie più recenti.
+preoccupate perche' ho testato che tutto funzionasse anche con le librerie piu' recenti.
 
 -python: io ho usato la versione 3.11.3 ma dovrebbe funzionare anche con versioni meno
-recenti anche se ho utilizzato in un file una sintassi disponibile solo da python
-3.10;
+recenti anche se ho utilizzato in un file una sintassi disponibile solo da python 3.10;
 -django: versione 4.2.3 ma anche questo dovrebbe funzionare con versioni meno recenti;
 -pillow: 10.0.0;
 -crispy-bootstrap5: versione 0.7;
@@ -25,7 +24,7 @@ comando "python manage.py runserver" e seguire il link locale. Ogni volta che av
 il sito vi verra' chiesto se volete creare un nuovo database. L'operazione non è 
 necessaria in quanto vi fornisco insieme ai file del sito un database già riempito ma 
 nel caso voleste ricrearlo con nuovi dati vi bastera' immettere 'si' da riga di comando.
-Vi avverto che la procedura non è velocissima e potrebbe durare qualche minuto. 
+Vi avverto che la procedura non è velocissima e potrebbe durare un paio minuto. 
 Consiglio inoltre di tenere d'occhio la console mentre testate il sito per notare quando
 vengono inviate le mail per esempio quando si prenota un esame. Infine ricordo che se si
 vuole testare la chat in tempo reale è necessario aprire due schede separate e in almeno
@@ -38,7 +37,7 @@ chiusa), non sono presenti chat di prova già pronte per essere testate ma dovre
 voi con due utenti diversi. Ho lo stesso inserito delle chat di prove fittizie per farvi 
 vedere che aspetto avrebbe il sito se ci fossero un po' di utenti in attesa. Le chat 
 sono in ordine cronologico quindi se ne create una, dovete andare all'ultima pagina per 
-vederla.Di seguito trovate email e password per accedere al sito come ognuno delle 
+vederla. Di seguito trovate email e password per accedere al sito come ognuno delle 
 categorie di utenti possibili:
 
 -utente normale: mariorossi@gmail.com | mariorossi
